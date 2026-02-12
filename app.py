@@ -1,7 +1,46 @@
 import streamlit as st
 
+import base64
+
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="SwiftPro Navigator", page_icon="🔧", layout="centered")
+
+# --- FUNCTION TO ADD BACKGROUND (Robust Version) ---
+def add_background(image_file):
+    try:
+        with open(image_file, "rb") as f:
+            encoded_string = base64.b64encode(f.read()).decode()
+        
+        st.markdown(
+            f"""
+            <style>
+            /* Apply directly to the main app container */
+            [data-testid="stAppViewContainer"] {{
+                background-image: url("data:image/png;base64,{encoded_string}");
+                background-repeat: no-repeat;
+                background-position: center 50px; /* 50px from the TOP */
+                background-size: 300px; /* Size of the logo */
+                background-attachment: scroll; /* Scrolls with the page */
+            }}
+            
+            /* Push the text down so it doesn't cover the logo */
+            [data-testid="block-container"] {{
+                padding-top: 180px !important; /* Adjust this if you need more space */
+            }}
+            
+            /* Hide the default Streamlit header decoration */
+            header {{
+                visibility: hidden;
+            }}
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+    except FileNotFoundError:
+        st.warning(f"⚠️ Could not find background image: {image_file}")
+
+# ✅ Call it
+add_background("image_7.png")
 
 # --- VISUAL STYLES (LYFT-STYLE CSS) ---
 st.markdown("""
@@ -42,28 +81,77 @@ st.markdown("""
 # --- STATE MANAGEMENT ---
 if 'step' not in st.session_state:
     st.session_state.step = 'HOME'
+if 'history' not in st.session_state:
+    st.session_state.history = []
 if 'customer_concern' not in st.session_state:
     st.session_state.customer_concern = ''
 if 'job_type' not in st.session_state:
     st.session_state.job_type = ''
 
 def go_to(step_name):
+    """Save current step to history, then move to new step."""
+    st.session_state.history.append(st.session_state.step)
     st.session_state.step = step_name
     st.rerun()
 
+def go_back():
+    """Pop the last step from history and go back to it."""
+    if st.session_state.history:
+        st.session_state.step = st.session_state.history.pop()
+        st.rerun()
+
 def restart():
     st.session_state.step = 'HOME'
+    st.session_state.history = [] # Clear history on restart
     st.session_state.customer_concern = ''
     st.session_state.job_type = ''
+    st.session_state.triage_notes = '' # Reset triage notes
     st.rerun()
 
 # --- SIDEBAR INFO ---
 with st.sidebar:
-    st.title("⚡ Quick Info")
-    st.info("❄️ HVAC Repair: **$99**")
-    st.info("💧 Plumbing Repair: **$49**")
-    st.success("🆓 Estimates/Sales: **FREE**")
+    st.image("image_7.png", use_container_width=True)
+    
+    # --- GLOBAL BACK BUTTON ---
+    # Only show if we are NOT on the home page (history exists)
+    if st.session_state.history:
+        if st.button("⬅️ BACK", use_container_width=True):
+            go_back()
+        st.divider()
+    # --------------------------
+
+    st.title("🧠 CSR Cheat Sheet")
+    
+    # RULE OF THUMB
+    st.info("""
+    **🚨 EMERGENCY IF:**
+    * Safety issue (Gas/Water damage)
+    * No Heat < 32°F
+    * No AC > 80°F
+    
+    **✅ STANDARD IF:**
+    * Comfort issue only
+    * Noise/Smell without danger
+    
+    *Unsure? Escalate to Manager.*
+    """)
+    
     st.divider()
+    
+    # LIVE NOTEPAD
+    if 'scratchpad' not in st.session_state:
+        st.session_state.scratchpad = ""
+    
+    st.markdown("### 📝 Scratchpad")
+    st.session_state.scratchpad = st.text_area(
+        "Quick notes (Name, #, Codes):", 
+        value=st.session_state.scratchpad,
+        height=150,
+        placeholder="Type quick details here..."
+    )
+    
+    st.divider()
+    
     if st.button("🔄 Start Over"):
         restart()
 
@@ -87,21 +175,33 @@ elif st.session_state.step == 'OUTBOUND_START':
     st.markdown('<div class="big-script">“Hi [Customer Name], this is [Name] with SwiftPro... I see you reached out about [Issue]. Wanted to make sure we get you taken care of.”</div>', unsafe_allow_html=True)
     if st.button("➡️ Continue"): go_to('LOCATION_CHECK')
 
-# 3. LOCATION GATE
 elif st.session_state.step == 'LOCATION_CHECK':
     st.title("📍 Service Area")
     st.markdown('<div class="big-script">“Just to make sure you’re in our service area, what city are you calling from?”</div>', unsafe_allow_html=True)
     
+    # --- ADDED LOCATION QUICK-REFERENCE ---
+    # We use an expander so it doesn't clutter the UI, but keep it open by default for visibility
+    with st.expander("🗺️ Reference: Covered Locations (NoVA)", expanded=True):
+        loc_col1, loc_col2 = st.columns(2)
+        with loc_col1:
+            st.markdown("""
+            **Fairfax County:** Springfield, Burke, Lorton, Fairfax, Vienna, McLean, Reston, Herndon, Chantilly, Centreville, Annandale.
+            
+            **Arlington & Alexandria:** (Inside the beltway, closer to DC).
+            """)
+        with loc_col2:
+            st.markdown("""
+            **Prince William County:** Woodbridge, Manassas, Dumfries, Dale City.
+            
+            **Loudoun County:** Ashburn, Leesburg, Sterling.
+            """)
+    # --------------------------------------
+
     col1, col2 = st.columns(2)
     with col1:
         if st.button("✅ IN AREA (NoVA)"): go_to('CLIENT_STATUS')
     with col2:
         if st.button("🚫 OUT OF AREA"): go_to('REFER_OUT')
-
-elif st.session_state.step == 'REFER_OUT':
-    st.error("🛑 Out of Service Area")
-    st.markdown('<div class="big-script">“I’m really sorry—we don’t service that area, but I’d be happy to point you in the right direction.”</div>', unsafe_allow_html=True)
-    if st.button("🏠 Home"): restart()
 
 # 4. CLIENT STATUS
 elif st.session_state.step == 'CLIENT_STATUS':
@@ -128,103 +228,141 @@ elif st.session_state.step == 'ACKNOWLEDGE_ISSUE':
         if st.button("✅ Saved. Continue to Category"):
             go_to('CATEGORY_SELECT')
 
-# 6. CATEGORY SELECTION
+# 6. CATEGORY & JOB SELECTION (Combined)
 elif st.session_state.step == 'CATEGORY_SELECT':
-    st.title("🔧 Select Category")
-    st.write("What kind of job is this?")
+    st.title("🔧 Select Job Type")
+    st.markdown('<div class="big-script">“What kind of issue are you experiencing today?”</div>', unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns(3)
+    
+    # --- HVAC COLUMN ---
     with col1:
-        if st.button("🔥 HVAC REPAIR"): go_to('HVAC_JOB_SELECT')
+        st.info("🔥 HVAC")
+        hvac_options = [
+            "Select job...",
+            "AC Repair", "Heat Pump Repair", "Natural Gas/Propane Furnace Repair", 
+            "Boiler Replacement", "Full HVAC System Replacement", "Mini-Split Repairs",
+            "New Mini-Split Installations", "HVAC Maintenance / Tune-ups", "Duct Cleanings",
+            "Filter replacement", "Fan Coils Replacements", "Packaged Unit Replacements",
+            "Thermostats", "Humidifiers & Dehumidifiers", "Air Scrubbers/UV/Air Purification"
+        ]
+        hvac_choice = st.selectbox("HVAC List:", hvac_options, label_visibility="collapsed")
+        
+        if hvac_choice != "Select job...":
+            if st.button("➡️ GO: HVAC"):
+                st.session_state.job_type = hvac_choice
+                go_to('HVAC_TRIAGE')
+
+    # --- PLUMBING COLUMN ---
     with col2:
-        if st.button("🚿 PLUMBING REPAIR"): go_to('PLUMB_JOB_SELECT')
+        st.info("🚿 PLUMBING")
+        plumb_options = [
+            "Select job...",
+            "Leaks", "Clogged drains", "Spigots", "Thermostatic Mixing Valves",
+            "Water Softeners & filtration systems", "Toilet repair/replacement", "Faucet repair",
+            "Water heater repair or replacement", "Tankless water heaters", "Garbage disposals",
+            "Sump pumps", "Sewer line issues", "Water line repair", "Fixture installs",
+            "Repipes", "Underground", "Well Pumps", "Customer supplied basic plumbing repairs"
+        ]
+        plumb_choice = st.selectbox("Plumbing List:", plumb_options, label_visibility="collapsed")
+        
+        if plumb_choice != "Select job...":
+            if st.button("➡️ GO: PLUMBING"):
+                st.session_state.job_type = plumb_choice
+                go_to('PLUMB_TRIAGE')
+
+    # --- SALES/ESTIMATE COLUMN ---
     with col3:
-        if st.button("🆕 SALES / ESTIMATE"): go_to('SALES_JOB_SELECT')
+        st.info("🆕 ESTIMATES")
+        sales_options = [
+            "Select job...",
+            "HVAC Replacement", "Water Heater Replacement (Tank/Tankless)",
+            "Humidifier Replacement", "Boiler Replacement"
+        ]
+        sales_choice = st.selectbox("Sales List:", sales_options, label_visibility="collapsed")
+        
+        if sales_choice != "Select job...":
+            if st.button("➡️ GO: ESTIMATE"):
+                st.session_state.job_type = sales_choice
+                go_to('SALES_TRIAGE')
 
-# 7. JOB DROPDOWNS (From Diagram)
-elif st.session_state.step == 'HVAC_JOB_SELECT':
-    st.title("🔥 HVAC Job Type")
-    hvac_options = [
-        "Select an option...",
-        "AC Repair", "Heat Pump Repair", "Gas/Propane Furnace Repair", "Boiler Repair",
-        "Mini-Split Repair", "Maintenance / Tune-Up", "Duct Cleaning", "Thermostat Issue", 
-        "Humidifier/Dehumidifier"
-    ]
-    selection = st.selectbox("Select specific issue:", hvac_options)
-    
-    if selection != "Select an option...":
-        st.session_state.job_type = selection
-        if st.button("Continue to Triage"): go_to('HVAC_TRIAGE')
-
-elif st.session_state.step == 'PLUMB_JOB_SELECT':
-    st.title("🚿 Plumbing Job Type")
-    plumb_options = [
-        "Select an option...",
-        "Leak (Active)", "Clogged Drain", "Toilet Repair", "Water Heater Repair",
-        "Garbage Disposal", "Sump Pump", "Fixture Install", "Well Pump", "Sewer Line"
-    ]
-    selection = st.selectbox("Select specific issue:", plumb_options)
-    
-    if selection != "Select an option...":
-        st.session_state.job_type = selection
-        if st.button("Continue to Triage"): go_to('PLUMB_TRIAGE')
-
-elif st.session_state.step == 'SALES_JOB_SELECT':
-    st.title("🆕 Estimate / Replacement")
-    sales_options = [
-        "Select an option...",
-        "Full HVAC System Replacement", "Water Heater Replacement (Tank/Tankless)",
-        "Boiler Replacement", "Humidifier Installation"
-    ]
-    selection = st.selectbox("Select specific issue:", sales_options)
-    
-    if selection != "Select an option...":
-        st.session_state.job_type = selection
-        if st.button("Continue to Triage"): go_to('SALES_TRIAGE')
-
-# 8. TRIAGE QUESTIONS
+# 8. TRIAGE QUESTIONS (Interactive)
 elif st.session_state.step == 'HVAC_TRIAGE':
     st.title("🔥 HVAC Discovery")
-    st.write(f"Job Type: **{st.session_state.job_type}**")
-    st.markdown("""
-    **ASK THESE QUESTIONS:**
-    1. 🕒 How long has this been going on?
-    2. ⚡ Is it Gas or Electric?
-    3. 🏚️ About how old is the system?
-    4. 🔊 Any weird noises or smells?
-    """)
-    st.error("⚠️ EMERGENCY IF: Gas Smell OR No Heat < 32°F")
+    st.info(f"Job: {st.session_state.job_type}")
     
-    if st.button("✅ Standard -> Price"): go_to('HVAC_PRICE')
+    # We use a form so the page doesn't reload on every keystroke
+    with st.form("hvac_triage_form"):
+        st.markdown("### 🗣️ Ask the Customer:")
+        
+        # Capture answers
+        q1 = st.text_input("1. 🕒 How long has this been going on?", key="hvac_q1")
+        q2 = st.selectbox("2. ⚡ Is it Gas or Electric?", ["Unsure", "Gas", "Electric", "Oil", "Propane"], key="hvac_q2")
+        q3 = st.text_input("3. 🏚️ About how old is the system?", key="hvac_q3")
+        q4 = st.text_input("4. 🔊 Any weird noises or smells?", key="hvac_q4")
+        
+        st.error("⚠️ EMERGENCY IF: Gas Smell OR No Heat < 32°F")
+        
+        submitted = st.form_submit_button("✅ Save Notes & Continue")
+        if submitted:
+            # Save a formatted summary string to session state for later
+            st.session_state.triage_notes = f"""
+            - Duration: {q1}
+            - Type: {q2}
+            - Age: {q3}
+            - Symptoms: {q4}
+            """
+            go_to('HVAC_PRICE')
+            
     if st.button("🚨 EMERGENCY"): go_to('EMERGENCY')
 
 elif st.session_state.step == 'PLUMB_TRIAGE':
     st.title("🚿 Plumbing Discovery")
-    st.write(f"Job Type: **{st.session_state.job_type}**")
-    st.markdown("""
-    **ASK THESE QUESTIONS:**
-    1. 💧 Is water actively leaking right now?
-    2. 🚫 Can you shut the water off?
-    3. 🚽 Are drains backing up?
-    4. 🏠 Do you have at least one working toilet?
-    """)
-    st.error("⚠️ EMERGENCY IF: Major flooding or structural damage.")
+    st.info(f"Job: {st.session_state.job_type}")
     
-    if st.button("✅ Standard -> Price"): go_to('PLUMB_PRICE')
+    with st.form("plumb_triage_form"):
+        st.markdown("### 🗣️ Ask the Customer:")
+        
+        q1 = st.selectbox("1. 💧 Is water actively leaking right now?", ["No", "Yes - Major", "Yes - Minor"], key="plumb_q1")
+        q2 = st.selectbox("2. 🚫 Can you shut the water off?", ["Yes", "No", "Unsure"], key="plumb_q2")
+        q3 = st.text_input("3. 🚽 Are drains backing up? Where?", key="plumb_q3")
+        q4 = st.selectbox("4. 🏠 Do you have at least one working toilet?", ["Yes", "No"], key="plumb_q4")
+        
+        st.error("⚠️ EMERGENCY IF: Major flooding or structural damage.")
+        
+        submitted = st.form_submit_button("✅ Save Notes & Continue")
+        if submitted:
+            st.session_state.triage_notes = f"""
+            - Active Leak: {q1}
+            - Shut off?: {q2}
+            - Backups: {q3}
+            - Working Toilet: {q4}
+            """
+            go_to('PLUMB_PRICE')
+            
     if st.button("🚨 EMERGENCY"): go_to('EMERGENCY')
 
 elif st.session_state.step == 'SALES_TRIAGE':
     st.title("🆕 Replacement Discovery")
-    st.write(f"Job Type: **{st.session_state.job_type}**")
-    st.markdown("""
-    **ASK THESE QUESTIONS:**
-    1. 🏚️ Is the system working or completely down?
-    2. 📅 How old is the current unit?
-    3. 🤔 What is driving the replacement? (Age, Bills, Comfort?)
-    """)
-    if st.button("✅ Ready -> Book Free Estimate"): go_to('SALES_PRICE')
+    st.info(f"Job: {st.session_state.job_type}")
+    
+    with st.form("sales_triage_form"):
+        st.markdown("### 🗣️ Ask the Customer:")
+        
+        q1 = st.selectbox("1. 🏚️ Is the current system working?", ["Working", "Not Working", "Intermittent"], key="sales_q1")
+        q2 = st.text_input("2. 📅 How old is the unit?", key="sales_q2")
+        q3 = st.text_input("3. 🤔 What is the main reason for replacement?", key="sales_q3")
+        
+        submitted = st.form_submit_button("✅ Save Notes & Book Estimate")
+        if submitted:
+            st.session_state.triage_notes = f"""
+            - Status: {q1}
+            - Age: {q2}
+            - Motivation: {q3}
+            """
+            go_to('SALES_PRICE')
 
-# 9. PRICING / PIVOT
+# 9. THE PIVOT (PRICING)
 elif st.session_state.step == 'HVAC_PRICE':
     st.title("💰 The Pivot (HVAC)")
     st.markdown('<div class="big-script">“For HVAC, it’s only <b>$99</b> to send a tech out to diagnose the system... Our soonest availability is [Day] between 8-12 or 12-5.”</div>', unsafe_allow_html=True)
@@ -251,38 +389,63 @@ elif st.session_state.step == 'SALES_PRICE':
     st.markdown('<div class="big-script">“For replacements, we provide <b>FREE in-home estimates</b> so we can give you accurate options. Our soonest availability is...”</div>', unsafe_allow_html=True)
     if st.button("✅ BOOK ESTIMATE"): go_to('CUSTOMER_INFO')
 
-# 10. CUSTOMER INFO & CLOSE
-elif st.session_state.step == 'CUSTOMER_INFO':
-    st.title("📝 Customer Details")
-    st.write("Collect the following:")
-    
-    with st.form("booking_form"):
-        st.text_input("First & Last Name")
-        st.text_input("Service Address")
-        st.text_input("Phone Number")
-        st.text_input("Email Address")
-        st.selectbox("Home Type", ["Single Family", "Townhome", "Condo"])
-        st.checkbox("Is Homeowner?")
-        
-        if st.form_submit_button("✅ COMPLETE BOOKING"):
-            go_to('CLOSE_CALL')
-
-elif st.session_state.step == 'CLOSE_CALL':
-    st.balloons()
-    st.success("🎉 Appointment Booked!")
-    st.markdown('<div class="big-script">“Great, everything is confirmed. You’ll receive a text as soon as the technician is on the way. Thank you for choosing SwiftPro!”</div>', unsafe_allow_html=True)
-    if st.button("🔄 New Call"): restart()
-
+# 9.5 OBJECTION HANDLING (Ensure this is here too)
 elif st.session_state.step == 'OBJECTION':
     st.title("🛡️ Handling Objections")
-    st.markdown('<div class="big-script">“Totally understand. The fee covers the trip and a full diagnosis by a certified expert. Plus, if you join our Membership ($20/mo), you get 15% off.”</div>', unsafe_allow_html=True)
+    st.info("💡 Goal: Calm delivery + Immediate scheduling.")
+    
+    # 1. TIME WINDOW OBJECTION
+    with st.expander("⏳ Objection: “That’s a big window” (8-12 or 12-5)", expanded=True):
+        st.markdown('<div class="big-script">“Totally understand. You’ll receive a text as soon as the technician is on the way to help narrow the timeframe.”</div>', unsafe_allow_html=True)
+
+    # 2. WRONG DAY OBJECTION
+    with st.expander("📅 Objection: “That day doesn’t work for me”"):
+        st.markdown('<div class="big-script">“No problem at all. We schedule in 8–12 or 12–5 windows. What day works best for you within one of those?”</div>', unsafe_allow_html=True)
+
+    # 3. URGENCY OBJECTION
+    with st.expander("🚨 Objection: “I need it sooner”"):
+        st.markdown('<div class="big-script">“I completely understand. Let’s get you scheduled now to hold your spot, and I’ll check with my manager to see if there’s any way to get you in sooner. If something opens up, I’ll reach out immediately.”</div>', unsafe_allow_html=True)
+
+    # 4. PRICE OBJECTION
+    with st.expander("💸 Objection: “The dispatch fee is too high”"):
+        st.markdown('<div class="big-script">“Totally understand. The fee covers the trip and a full diagnosis by a certified expert. Plus, if you join our Membership ($20/mo), you get 15% off repairs.”</div>', unsafe_allow_html=True)
+
+    st.divider()
+    
     col1, col2 = st.columns(2)
     with col1:
         if st.button("🤝 SAVED -> BOOK"): go_to('CUSTOMER_INFO')
     with col2:
         if st.button("❌ LOST"): restart()
 
-elif st.session_state.step == 'EMERGENCY':
-    st.error("🚨 EMERGENCY PROTOCOL")
-    st.write("Consult Manager Immediately.")
-    if st.button("🔙 Back"): go_to('CATEGORY_SELECT')
+# 10. CUSTOMER INFO & CLOSE
+elif st.session_state.step == 'CUSTOMER_INFO':
+    st.title("💻 ServiceTitan Entry")
+    
+    # --- COPY/PASTE NOTES FOR SERVICETITAN ---
+    st.info("👇 Copy these notes into the Job Description in ServiceTitan:")
+    
+    full_notes = f"""
+    JOB TYPE: {st.session_state.get('job_type', 'N/A')}
+    
+    CUSTOMER CONCERN:
+    {st.session_state.get('customer_concern', 'N/A')}
+    
+    TRIAGE DETAILS:
+    {st.session_state.get('triage_notes', 'No notes recorded.')}
+    """
+    st.code(full_notes, language="text")
+    # ----------------------------------------
+
+    st.markdown("### ➡️ Next Steps:")
+    st.markdown("""
+    1. **Go to ServiceTitan** and create the job.
+    2. **Enter Customer Details** (Name, Address, Phone, Email).
+    3. **Paste the Notes** from above.
+    4. **Book the Appointment.**
+    """)
+    
+    st.divider()
+    
+    if st.button("✅ I HAVE BOOKED IT IN SERVICETITAN"):
+        go_to('CLOSE_CALL')
