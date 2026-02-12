@@ -203,6 +203,23 @@ elif st.session_state.step == 'LOCATION_CHECK':
     with col2:
         if st.button("🚫 OUT OF AREA"): go_to('REFER_OUT')
 
+        # --- STEP: OUT OF AREA (REFER OUT) ---
+elif st.session_state.step == 'REFER_OUT':
+    st.title("🚫 Out of Service Area")
+    
+    # El guion exacto que pediste
+    st.markdown('<div class="big-script">“I’m really sorry—we don’t service that area, but I’d be happy to point you in the right direction.”</div>', unsafe_allow_html=True)
+    
+    st.divider()
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        # Botón para regresar por si te equivocaste al hacer clic
+        if st.button("⬅️ Go Back"): go_back()
+    with col2:
+        # Botón para terminar y empezar nueva llamada
+        if st.button("🔄 New Call"): restart()
+
 # 4. CLIENT STATUS
 elif st.session_state.step == 'CLIENT_STATUS':
     st.title("👤 Customer Status")
