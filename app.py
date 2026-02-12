@@ -452,29 +452,63 @@ elif st.session_state.step == 'OBJECTION':
         if st.button("❌ LOST"): restart()
 
 # 10. CUSTOMER INFO & CLOSE
+# 10. CUSTOMER INFO & CLOSE
 elif st.session_state.step == 'CUSTOMER_INFO':
     st.title("💻 ServiceTitan Entry")
     
-    # --- COPY/PASTE NOTES FOR SERVICETITAN ---
+    # --- LÓGICA DE ETIQUETAS AUTOMÁTICAS ---
+    job = st.session_state.get('job_type', '')
+    notes = st.session_state.get('triage_notes', '').lower()
+    concern = st.session_state.get('customer_concern', '').lower()
+    
+    rec_tags = ["Booked"] # Etiqueta base
+    
+    # 1. Etiquetas por tipo de servicio
+    if any(x in job for x in ["Replacement", "Estimate", "Install", "Sales"]):
+        rec_tags.extend(["Sales Lead", "Upgrade Potential"])
+    elif "Maintenance" in job:
+        rec_tags.extend(["Maintenance Lead", "Membership"])
+    else:
+        rec_tags.append("Repair Inquiry")
+
+    # 2. Etiquetas por urgencia (Lead Temperature)
+    if any(x in notes or x in concern for x in ["leak", "no heat", "emergency", "flood", "gas", "spark"]):
+        rec_tags.append("Hot Lead")
+    else:
+        rec_tags.append("Warm Lead")
+        
+    # 3. Etiquetas de oportunidad
+    if "second opinion" in concern or "2nd" in concern:
+        rec_tags.append("2nd Opinion")
+    # ---------------------------------------
+
+    # Mostrar las etiquetas recomendadas visualmente
+    st.markdown("### 🏷️ Recommended ServiceTitan Tags")
+    st.info(f"**Add these tags:** {', '.join(rec_tags)}")
+
+    # Cuadro consolidado para copiar y pegar
     st.info("👇 Copy these notes into the Job Description in ServiceTitan:")
     
     full_notes = f"""
-    JOB TYPE: {st.session_state.get('job_type', 'N/A')}
+    JOB TYPE: {job}
+    TAGS: {', '.join(rec_tags)}
     
     CUSTOMER CONCERN:
     {st.session_state.get('customer_concern', 'N/A')}
     
     TRIAGE DETAILS:
     {st.session_state.get('triage_notes', 'No notes recorded.')}
+    
+    SCRATCHPAD NOTES:
+    {st.session_state.get('scratchpad', 'N/A')}
     """
     st.code(full_notes, language="text")
-    # ----------------------------------------
 
     st.markdown("### ➡️ Next Steps:")
     st.markdown("""
     1. **Go to ServiceTitan** and create the job.
-    2. **Enter Customer Details** (Name, Address, Phone, Email).
-    3. **Paste the Notes** from above.
+    2. **Add the Tags** listed above.
+    3. **Paste the Notes** from the box above.
     4. **Book the Appointment.**
     """)
     
@@ -482,5 +516,3 @@ elif st.session_state.step == 'CUSTOMER_INFO':
     
     if st.button("✅ I HAVE BOOKED IT IN SERVICETITAN"):
         go_to('CLOSE_CALL')
-
-     
