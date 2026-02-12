@@ -2,6 +2,18 @@ import streamlit as st
 
 import base64
 
+def mostrar_disponibilidad_central():
+    st.markdown("### 📅 Service Availability Update")
+    info_araksan = """
+    **🔥 HVAC:** Feb 11 (Wed) - After 12 PM | Feb 12 (Thu) - Open (All Day)
+    
+    **🚿 Plumbing:** Feb 11 (Wed) - Emergency only | Feb 12 (Thu) - Open (All Day)
+    
+    **🧹 Duct/Dryer:** Feb 12 (Thu) - Open (All Day)
+    """
+    st.success(info_araksan)
+    st.divider()
+
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="SwiftPro Navigator", page_icon="🔧", layout="centered")
 
@@ -382,7 +394,9 @@ elif st.session_state.step == 'SALES_TRIAGE':
 # 9. THE PIVOT (PRICING)
 elif st.session_state.step == 'HVAC_PRICE':
     st.title("💰 The Pivot (HVAC)")
-    st.markdown('<div class="big-script">“For HVAC, it’s only <b>$99</b> to send a tech out to diagnose the system... Our soonest availability is [Day] between 8-12 or 12-5.”</div>', unsafe_allow_html=True)
+    mostrar_disponibilidad_central() # <--- PEGAR AQUÍ
+    
+    st.markdown('<div class="big-script">“ HVAC, it’s only <b>$99</b> to send a tech out to diagnose the system... Our soonest availability is [Day] between 8-12 or 12-5.”</div>', unsafe_allow_html=True)
     st.warning("🛑 DO NOT PAUSE after the price!")
     
     col1, col2 = st.columns(2)
@@ -393,7 +407,8 @@ elif st.session_state.step == 'HVAC_PRICE':
 
 elif st.session_state.step == 'PLUMB_PRICE':
     st.title("💰 The Pivot (Plumbing)")
-    st.markdown('<div class="big-script">“For plumbing, it’s only <b>$49</b> to send a tech out... Our soonest availability is [Day] between 8-12 or 12-5.”</div>', unsafe_allow_html=True)
+    mostrar_disponibilidad_central() # <--- PEGAR AQUÍ
+    st.markdown('<div class="big-script">" plumbing, it’s only <b>$49</b> to send a tech out... Our soonest availability is [Day] between 8-12 or 12-5.”</div>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
@@ -403,6 +418,7 @@ elif st.session_state.step == 'PLUMB_PRICE':
 
 elif st.session_state.step == 'SALES_PRICE':
     st.title("🆓 The Pivot (Sales)")
+    mostrar_disponibilidad_central() # <--- PEGAR AQUÍ
     st.markdown('<div class="big-script">“For replacements, we provide <b>FREE in-home estimates</b> so we can give you accurate options. Our soonest availability is...”</div>', unsafe_allow_html=True)
     if st.button("✅ BOOK ESTIMATE"): go_to('CUSTOMER_INFO')
 
@@ -466,3 +482,5 @@ elif st.session_state.step == 'CUSTOMER_INFO':
     
     if st.button("✅ I HAVE BOOKED IT IN SERVICETITAN"):
         go_to('CLOSE_CALL')
+
+     
