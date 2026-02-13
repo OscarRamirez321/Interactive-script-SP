@@ -1,15 +1,11 @@
 import streamlit as st
-
-
 import base64
-
-
 
 def mostrar_disponibilidad_central():
     st.markdown("### 📅 Service Availability Update")
     info_araksan = """
     **🔥 HVAC:** Feb 11 (Wed) - After 12 PM | Feb 12 (Thu) - Open (All Day)
-    s
+    
     **🚿 Plumbing:** Feb 11 (Wed) - Emergency only | Feb 12 (Thu) - Open (All Day)
     
     **🧹 Duct/Dryer:** Feb 12 (Thu) - Open (All Day)
@@ -73,6 +69,7 @@ st.markdown("""
         border-color: #ff4b4b;
         color: #ff4b4b;
     }
+    /* Main Big Script Header */
     .big-script {
         font-size: 20px !important;
         font-weight: 500;
@@ -83,6 +80,18 @@ st.markdown("""
         border-left: 6px solid #ff4b4b;
         margin-bottom: 20px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    /* NEW: Specific Dialogue Boxes for the Acknowledge Section */
+    .dialogue-box {
+        background-color: rgba(255, 255, 255, 0.05); /* Subtle background for Dark Mode */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-left: 6px solid #4CAF50; /* Default Green */
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-size: 18px;
+        font-style: italic;
+        margin-bottom: 20px;
+        line-height: 1.5;
     }
     .input-box {
         border: 2px solid #4CAF50;
@@ -196,7 +205,6 @@ elif st.session_state.step == 'LOCATION_CHECK':
     st.markdown('<div class="big-script">“Just to make sure you’re in our service area, what city are you calling from?”</div>', unsafe_allow_html=True)
     
     # --- ADDED LOCATION QUICK-REFERENCE ---
-    # We use an expander so it doesn't clutter the UI, but keep it open by default for visibility
     with st.expander("🗺️ Reference: Covered Locations (NoVA)", expanded=True):
         loc_col1, loc_col2 = st.columns(2)
         with loc_col1:
@@ -211,7 +219,6 @@ elif st.session_state.step == 'LOCATION_CHECK':
             
             **Loudoun County:** Ashburn, Leesburg, Sterling.
             """)
-    # --------------------------------------
 
     col1, col2 = st.columns(2)
     with col1:
@@ -219,21 +226,16 @@ elif st.session_state.step == 'LOCATION_CHECK':
     with col2:
         if st.button("🚫 OUT OF AREA"): go_to('REFER_OUT')
 
-        # --- STEP: OUT OF AREA (REFER OUT) ---
+# 3. STEP: OUT OF AREA (REFER OUT)
 elif st.session_state.step == 'REFER_OUT':
     st.title("🚫 Out of Service Area")
-    
-    # El guion exacto que pediste
     st.markdown('<div class="big-script">“I’m really sorry—we don’t service that area, but I’d be happy to point you in the right direction.”</div>', unsafe_allow_html=True)
     
     st.divider()
-    
     col1, col2 = st.columns(2)
     with col1:
-        # Botón para regresar por si te equivocaste al hacer clic
         if st.button("⬅️ Go Back"): go_back()
     with col2:
-        # Botón para terminar y empezar nueva llamada
         if st.button("🔄 New Call"): restart()
 
 # 4. CLIENT STATUS
@@ -249,17 +251,45 @@ elif st.session_state.step == 'CLIENT_STATUS':
             st.toast("Search profile in ServiceTitan...")
             go_to('ACKNOWLEDGE_ISSUE')
 
-# 5. ACKNOWLEDGE & LOG ISSUE (Diagram Note: "Add a box")
+# 5. ACKNOWLEDGE & LOG ISSUE (UPDATED SECTION)
 elif st.session_state.step == 'ACKNOWLEDGE_ISSUE':
     st.title("📝 Understanding the Issue")
-    st.markdown('<div class="big-script">“Got it, thank you for explaining that. You’re definitely not alone—we handle situations like this every day. Let me ask a few quick questions...”</div>', unsafe_allow_html=True)
+    
+    # --- Option 1: They explained it ---
+    st.markdown("#### ✅ **If they already explained the issue:**")
+    st.markdown(
+        '<div class="dialogue-box">'
+        '“Okay, absolutely. Let me ask you a couple quick questions so we can get this scheduled properly.”'
+        '</div>', 
+        unsafe_allow_html=True
+    )
+
+    # --- Option 2: They haven't explained it ---
+    st.markdown("#### ✅ **If they have not explained the reason yet:**")
+    # Note: Added inline style to change border color to Orange/Yellow for differentiation
+    st.markdown(
+        '<div class="dialogue-box" style="border-left: 6px solid #FFD700;">'
+        '“Are you needing help with your heating and cooling system or something plumbing-related?”'
+        '</div>', 
+        unsafe_allow_html=True
+    )
     
     # Input box for note taking
-    st.session_state.customer_concern = st.text_area("✍️ Write down the customer's concern here:", height=100)
+    st.markdown("### ✍️ Notes")
+    st.session_state.customer_concern = st.text_area(
+        "Write down the customer's concern here:", 
+        height=150,
+        placeholder="e.g. leaking faucet, no heat upstairs...",
+        label_visibility="collapsed"
+    )
     
+    # Navigation Button
     if st.session_state.customer_concern:
         if st.button("✅ Saved. Continue to Category"):
             go_to('CATEGORY_SELECT')
+    else:
+        # Show disabled or hint button if empty (optional, but good UX)
+        st.caption("*Please enter a note to continue*")
 
 # 6. CATEGORY & JOB SELECTION (Combined)
 elif st.session_state.step == 'CATEGORY_SELECT':
@@ -273,7 +303,7 @@ elif st.session_state.step == 'CATEGORY_SELECT':
         st.info("🔥 HVAC")
         hvac_options = [
             "Select job...",
-            "No Heat Repair", "No AC Repair", "Maintenance (Inspections, Cleanings, system is working and needs to be cleaned or maintained) ", 
+            "No Heat Repair", "No AC Repair", "Maintenance (Inspections, Cleanings) ", 
             "Service/Repair"
         ]
         hvac_choice = st.selectbox("HVAC List:", hvac_options, label_visibility="collapsed")
@@ -318,11 +348,8 @@ elif st.session_state.step == 'HVAC_TRIAGE':
     st.title("🔥 HVAC Discovery")
     st.info(f"Job: {st.session_state.job_type}")
     
-    # We use a form so the page doesn't reload on every keystroke
     with st.form("hvac_triage_form"):
         st.markdown("### 🗣️ Ask the Customer:")
-        
-        # Capture answers
         q1 = st.text_input("1. 🕒 How long has this been going on?", key="hvac_q1")
         q2 = st.selectbox("2. ⚡ Is it Gas or Electric?", ["Unsure", "Gas", "Electric", "Oil", "Propane"], key="hvac_q2")
         q3 = st.text_input("3. 🏚️ About how old is the system?", key="hvac_q3")
@@ -332,7 +359,6 @@ elif st.session_state.step == 'HVAC_TRIAGE':
         
         submitted = st.form_submit_button("✅ Save Notes & Continue")
         if submitted:
-            # Save a formatted summary string to session state for later
             st.session_state.triage_notes = f"""
             - Duration: {q1}
             - Type: {q2}
@@ -349,7 +375,6 @@ elif st.session_state.step == 'PLUMB_TRIAGE':
     
     with st.form("plumb_triage_form"):
         st.markdown("### 🗣️ Ask the Customer:")
-        
         q1 = st.selectbox("1. 💧 Is water actively leaking right now?", ["No", "Yes - Major", "Yes - Minor"], key="plumb_q1")
         q2 = st.selectbox("2. 🚫 Can you shut the water off?", ["Yes", "No", "Unsure"], key="plumb_q2")
         q3 = st.text_input("3. 🚽 Are drains backing up? Where?", key="plumb_q3")
@@ -375,7 +400,6 @@ elif st.session_state.step == 'SALES_TRIAGE':
     
     with st.form("sales_triage_form"):
         st.markdown("### 🗣️ Ask the Customer:")
-        
         q1 = st.selectbox("1. 🏚️ Is the current system working?", ["Working", "Not Working", "Intermittent"], key="sales_q1")
         q2 = st.text_input("2. 📅 How old is the unit?", key="sales_q2")
         q3 = st.text_input("3. 🤔 What is the main reason for replacement?", key="sales_q3")
@@ -392,7 +416,7 @@ elif st.session_state.step == 'SALES_TRIAGE':
 # 9. THE PIVOT (PRICING)
 elif st.session_state.step == 'HVAC_PRICE':
     st.title("💰 The Pivot (HVAC)")
-    mostrar_disponibilidad_central() # <--- PEGAR AQUÍ
+    mostrar_disponibilidad_central() 
     
     st.markdown('<div class="big-script">“ HVAC, it’s only <b>$99</b> to send a tech out to diagnose the system... Our soonest availability is [Day] between 8-12 or 12-5.”</div>', unsafe_allow_html=True)
     st.warning("🛑 DO NOT PAUSE after the price!")
@@ -405,7 +429,7 @@ elif st.session_state.step == 'HVAC_PRICE':
 
 elif st.session_state.step == 'PLUMB_PRICE':
     st.title("💰 The Pivot (Plumbing)")
-    mostrar_disponibilidad_central() # <--- PEGAR AQUÍ
+    mostrar_disponibilidad_central()
     st.markdown('<div class="big-script">" plumbing, it’s only <b>$49</b> to send a tech out... Our soonest availability is [Day] between 8-12 or 12-5.”</div>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
@@ -416,11 +440,11 @@ elif st.session_state.step == 'PLUMB_PRICE':
 
 elif st.session_state.step == 'SALES_PRICE':
     st.title("🆓 The Pivot (Sales)")
-    mostrar_disponibilidad_central() # <--- PEGAR AQUÍ
+    mostrar_disponibilidad_central()
     st.markdown('<div class="big-script">“For replacements, we provide <b>FREE in-home estimates</b> so we can give you accurate options. Our soonest availability is...”</div>', unsafe_allow_html=True)
     if st.button("✅ BOOK ESTIMATE"): go_to('CUSTOMER_INFO')
 
-# 9.5 OBJECTION HANDLING (Ensure this is here too)
+# 9.5 OBJECTION HANDLING
 elif st.session_state.step == 'OBJECTION':
     st.title("🛡️ Handling Objections")
     st.info("💡 Goal: Calm delivery + Immediate scheduling.")
@@ -442,7 +466,6 @@ elif st.session_state.step == 'OBJECTION':
         st.markdown('<div class="big-script">“Totally understand. The fee covers the trip and a full diagnosis by a certified expert. Plus, if you join our Membership ($20/mo), you get 15% off repairs.”</div>', unsafe_allow_html=True)
 
     st.divider()
-    
     col1, col2 = st.columns(2)
     with col1:
         if st.button("🤝 SAVED -> BOOK"): go_to('CUSTOMER_INFO')
@@ -450,18 +473,16 @@ elif st.session_state.step == 'OBJECTION':
         if st.button("❌ LOST"): restart()
 
 # 10. CUSTOMER INFO & CLOSE
-# 10. CUSTOMER INFO & CLOSE
 elif st.session_state.step == 'CUSTOMER_INFO':
     st.title("💻 ServiceTitan Entry")
     
-    # --- LÓGICA DE ETIQUETAS AUTOMÁTICAS ---
     job = st.session_state.get('job_type', '')
     notes = st.session_state.get('triage_notes', '').lower()
     concern = st.session_state.get('customer_concern', '').lower()
     
-    rec_tags = ["Booked"] # Etiqueta base
+    rec_tags = ["Booked"]
     
-    # 1. Etiquetas por tipo de servicio
+    # 1. Tags by Service
     if any(x in job for x in ["Replacement", "Estimate", "Install", "Sales"]):
         rec_tags.extend(["Sales Lead", "Upgrade Potential"])
     elif "Maintenance" in job:
@@ -469,22 +490,19 @@ elif st.session_state.step == 'CUSTOMER_INFO':
     else:
         rec_tags.append("Repair Inquiry")
 
-    # 2. Etiquetas por urgencia (Lead Temperature)
+    # 2. Tags by Lead Temp
     if any(x in notes or x in concern for x in ["leak", "no heat", "emergency", "flood", "gas", "spark"]):
         rec_tags.append("Hot Lead")
     else:
         rec_tags.append("Warm Lead")
         
-    # 3. Etiquetas de oportunidad
+    # 3. Opportunity Tags
     if "second opinion" in concern or "2nd" in concern:
         rec_tags.append("2nd Opinion")
-    # ---------------------------------------
 
-    # Mostrar las etiquetas recomendadas visualmente
     st.markdown("### 🏷️ Recommended ServiceTitan Tags")
     st.info(f"**Add these tags:** {', '.join(rec_tags)}")
 
-    # Cuadro consolidado para copiar y pegar
     st.info("👇 Copy these notes into the Job Description in ServiceTitan:")
     
     full_notes = f"""
