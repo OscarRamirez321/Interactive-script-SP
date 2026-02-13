@@ -4,61 +4,95 @@ import base64
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="SwiftPro Navigator", page_icon="🔧", layout="centered")
 
-# --- VISUAL STYLES (FINAL FIX - DARK DROPDOWNS) ---
+# --- VISUAL STYLES (NUCLEAR FIX - SOLID DARK MODE) ---
 st.markdown("""
     <style>
-    /* 1. FONDO GENERAL */
+    /* 1. FONDO GENERAL DE LA APP */
     .stApp {
         background-color: #0e1117;
     }
     section[data-testid="stSidebar"] {
         background-color: #1c2333;
     }
-
-    /* 2. TEXTOS GLOBALES */
-    h1, h2, h3, h4, p, li, label, .stMarkdown, div {
+    
+    /* 2. FORZAR TEXTO BLANCO GLOBALMENTE */
+    h1, h2, h3, h4, p, li, span, label, .stMarkdown, div {
         color: #f8f9fa !important;
     }
 
-    /* 3. ARREGLO DEFINITIVO DE DROPDOWNS (Menús Desplegables) */
-    /* A) El contenedor flotante externo */
-    div[data-baseweb="popover"] {
-        background-color: #1c2333 !important;
+    /* ==============================================
+       CORRECCIÓN 1: LOS INPUTS (CAJAS DE TEXTO)
+       Problema: Se veían blancas en tu screenshot.
+       Solución: Pintar de negro sólido la caja Y el input.
+       ============================================== */
+    
+    /* La caja contenedora del input */
+    div[data-baseweb="input"] {
+        background-color: #1c2333 !important; /* Fondo SÓLIDO, no transparente */
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 8px !important;
     }
     
-    /* B) La lista interna (donde están las opciones) */
+    /* El campo donde escribes (el texto en sí) */
+    .stTextInput input, .stNumberInput input {
+        background-color: #1c2333 !important;
+        color: white !important;
+        caret-color: white !important; /* El cursor que parpadea */
+    }
+    
+    /* El Selectbox cerrado (antes de hacer clic) */
+    div[data-baseweb="select"] > div {
+        background-color: #1c2333 !important;
+        color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }
+
+    /* ==============================================
+       CORRECCIÓN 2: EL DROPDOWN DESPLEGABLE (MENU)
+       Problema: Fondo blanco con letras blancas.
+       Solución: Atacar el 'popover' que flota.
+       ============================================== */
+    
+    /* El contenedor flotante (la caja madre del menú) */
+    div[data-baseweb="popover"],
+    div[data-baseweb="popover"] > div {
+        background-color: #1c2333 !important;
+        border: none !important;
+    }
+
+    /* La lista de opciones (ul) */
     ul[data-baseweb="menu"] {
         background-color: #1c2333 !important;
     }
-    
-    /* C) Las opciones individuales (li) */
+
+    /* Cada opción individual (li) */
     li[data-baseweb="option"] {
-        background-color: #1c2333 !important; /* Fondo Oscuro */
-        color: white !important; /* Texto Blanco */
+        background-color: #1c2333 !important;
+        color: white !important;
     }
-    
-    /* D) Asegurar que el TEXTO dentro de la opción sea blanco */
+
+    /* Asegurar que el texto dentro de la opción sea blanco */
     li[data-baseweb="option"] * {
         color: white !important;
     }
 
-    /* E) Efecto Hover (cuando pasas el mouse por encima) */
+    /* Cuando pasas el mouse por encima (Hover) */
     li[data-baseweb="option"]:hover, 
-    li[data-baseweb="option"]:focus, 
     li[data-baseweb="option"][aria-selected="true"] {
-        background-color: #ff4b4b !important; /* Rojo al seleccionar */
+        background-color: #ff4b4b !important; /* Rojo SwiftPro */
         color: white !important;
     }
 
-    /* 4. ARREGLO DE EXPANDERS (Barra de título oscura) */
+    /* ==============================================
+       CORRECCIÓN 3: EXPANDERS (CAJAS QUE SE ABREN)
+       ============================================== */
     div[data-testid="stExpander"] {
-        background-color: rgba(255, 255, 255, 0.05) !important;
+        background-color: #1c2333 !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         color: white !important;
     }
     div[data-testid="stExpander"] > details > summary {
-        background-color: rgba(255, 255, 255, 0.05) !important;
+        background-color: #1c2333 !important;
         color: white !important;
     }
     div[data-testid="stExpander"] > details > summary:hover {
@@ -68,37 +102,21 @@ st.markdown("""
         background-color: transparent !important;
     }
 
-    /* 5. ARREGLO DE INPUTS (Cajas de texto y Selectbox cerrado) */
-    div[data-baseweb="input"], div[data-baseweb="select"] > div {
-        background-color: rgba(0, 0, 0, 0.3) !important;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        color: white !important;
-    }
-    .stTextInput input {
-        background-color: transparent !important;
-        color: white !important;
-    }
-    div[data-baseweb="select"] span {
-        color: white !important;
-    }
-    /* Icono de la flechita del dropdown */
-    div[data-baseweb="select"] svg {
-        fill: white !important;
-    }
-
-    /* 6. SCRATCHPAD (Bloc de notas blanco) */
+    /* ==============================================
+       OTROS ESTILOS (BOTONES, CAJAS, ETC)
+       ============================================== */
+    
+    /* SCRATCHPAD: Este es el ÚNICO que dejamos blanco (Bloc de notas) */
     .stTextArea textarea {
         background-color: #ffffff !important; 
         color: #000000 !important;
-        caret-color: black;
-        border-radius: 8px;
+        caret-color: black !important;
     }
     .stTextArea label {
         color: white !important;
     }
 
-    /* 7. ESTILO DE BOTONES */
+    /* BOTONES */
     .stButton button {
         width: 100%;
         border-radius: 12px;
@@ -108,7 +126,6 @@ st.markdown("""
         background-color: rgba(255, 255, 255, 0.1); 
         color: white !important;
         border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: all 0.3s;
         backdrop-filter: blur(5px);
     }
     .stButton button:hover {
@@ -117,24 +134,21 @@ st.markdown("""
         color: #ff4b4b !important;
     }
 
-    /* 8. CAJAS PERSONALIZADAS */
+    /* CAJAS DE TEXTO PERSONALIZADAS */
     .big-script {
         font-size: 20px !important;
         font-weight: 500;
         color: #ffffff !important;
-        background: rgba(15, 23, 42, 0.6);
-        backdrop-filter: blur(12px);
+        background: #1e293b; /* Fondo sólido oscuro */
         padding: 24px;
         border-radius: 16px;
         border-left: 6px solid #ff4b4b;
         margin-bottom: 25px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
 
     .dialogue-box, .contact-box {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
+        background: #1e293b; /* Fondo sólido oscuro */
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 12px;
         padding: 15px;
@@ -147,42 +161,18 @@ st.markdown("""
         margin-bottom: 20px;
     }
 
-    /* 9. CONTACT ITEMS */
-    .contact-item {
-        margin-bottom: 12px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: 8px;
-    }
-    .contact-item:last-child {
-        margin-bottom: 0;
-        border-bottom: none;
-        padding-bottom: 0;
-    }
-    .contact-name {
-        font-weight: 600;
-        font-size: 14px;
-        color: #ffffff !important;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .contact-phone {
-        font-family: 'Courier New', monospace;
-        font-size: 15px;
-        color: #4ade80 !important;
-        margin-top: 4px;
-        font-weight: bold;
-    }
+    /* CONTACTOS */
+    .contact-item { border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 8px; margin-bottom: 12px; }
+    .contact-item:last-child { border: none; margin: 0; padding: 0; }
+    .contact-name { font-weight: 600; color: #ffffff !important; }
+    .contact-phone { font-family: 'Courier New', monospace; color: #4ade80 !important; font-weight: bold; }
 
-    /* 10. LIMPIEZA */
+    /* LIMPIEZA FINAL */
     header {visibility: hidden;}
-    .stCodeBlock {
-        background-color: #000000 !important;
-        border: 1px solid #333 !important;
-    }
+    .stCodeBlock { background-color: #000000 !important; }
+    ::placeholder { color: rgba(255, 255, 255, 0.5) !important; }
     </style>
 """, unsafe_allow_html=True)
-
 
 # --- STATE MANAGEMENT ---
 if 'step' not in st.session_state: st.session_state.step = 'HOME'
