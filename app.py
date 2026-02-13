@@ -1,22 +1,7 @@
 import streamlit as st
 import base64
 
-def mostrar_disponibilidad_central():
-    st.markdown("### 📅 Service Availability Update")
-    info_araksan = """
-    **🔥 HVAC:** Feb 11 (Wed) - After 12 PM | Feb 12 (Thu) - Open (All Day)
-    
-    **🚿 Plumbing:** Feb 11 (Wed) - Emergency only | Feb 12 (Thu) - Open (All Day)
-    
-    **🧹 Duct/Dryer:** Feb 12 (Thu) - Open (All Day)
-    """
-    st.success(info_araksan)
-    st.divider()
-
-# --- PAGE CONFIGURATION ---
-st.set_page_config(page_title="SwiftPro Navigator", page_icon="🔧", layout="centered")
-
-# --- FUNCTION TO ADD BACKGROUND (Robust Version) ---
+# --- FUNCTION TO ADD BACKGROUND ---
 def add_background(image_file):
     try:
         with open(image_file, "rb") as f:
@@ -29,14 +14,14 @@ def add_background(image_file):
             [data-testid="stAppViewContainer"] {{
                 background-image: url("data:image/png;base64,{encoded_string}");
                 background-repeat: no-repeat;
-                background-position: center 50px; /* 50px from the TOP */
-                background-size: 300px; /* Size of the logo */
-                background-attachment: scroll; /* Scrolls with the page */
+                background-position: center center; 
+                background-size: 300px; 
+                background-attachment: fixed; 
             }}
             
             /* Push the text down so it doesn't cover the logo */
             [data-testid="block-container"] {{
-                padding-top: 180px !important; /* Adjust this if you need more space */
+                padding-top: 50px !important; 
             }}
             
             /* Hide the default Streamlit header decoration */
@@ -48,94 +33,163 @@ def add_background(image_file):
             unsafe_allow_html=True
         )
     except FileNotFoundError:
-        st.warning(f"⚠️ Could not find background image: {image_file}")
+        pass
 
-# ✅ Call it
-add_background("image_7.png")
+# --- PAGE CONFIGURATION ---
+st.set_page_config(page_title="SwiftPro Navigator", page_icon="🔧", layout="centered")
 
-# --- VISUAL STYLES (LYFT-STYLE CSS) ---
+# ✅ Call Background
+add_background("imae_7.png")
+
+# --- VISUAL STYLES (THE GLASS PRO UPGRADE) ---
 st.markdown("""
     <style>
+    /* GLOBAL TEXT COLOR */
+    h1, h2, h3, h4, p, li, span, div {
+        color: #f8f9fa !important;
+    }
+
+    /* BUTTONS */
     .stButton button {
         width: 100%;
         border-radius: 12px;
         height: 3.5em;
         font-weight: 600;
         font-size: 16px;
-        border: 1px solid #e0e0e0;
+        background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent button */
+        color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.2);
         transition: all 0.3s;
+        backdrop-filter: blur(5px);
     }
     .stButton button:hover {
         border-color: #ff4b4b;
-        color: #ff4b4b;
+        background-color: rgba(255, 75, 75, 0.2);
+        color: #ff4b4b !important;
     }
-    /* Main Big Script Header */
+
+    /* BIG SCRIPT (The Main Question Box) - GLASS STYLE */
     .big-script {
         font-size: 20px !important;
         font-weight: 500;
-        color: #1f1f1f;
-        background-color: #f8f9fa;
-        padding: 20px;
-        border-radius: 12px;
+        color: #ffffff !important;
+        background: rgba(15, 23, 42, 0.6); /* Dark transparent background */
+        backdrop-filter: blur(12px); /* Blur effect */
+        -webkit-backdrop-filter: blur(12px);
+        padding: 24px;
+        border-radius: 16px;
         border-left: 6px solid #ff4b4b;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        margin-bottom: 25px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     }
-    /* NEW: Specific Dialogue Boxes for the Acknowledge Section */
+
+    /* DIALOGUE BOX (Secondary Scripts) - GLASS STYLE */
     .dialogue-box {
-        background-color: rgba(255, 255, 255, 0.05); /* Subtle background for Dark Mode */
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-left: 6px solid #4CAF50; /* Default Green */
+        border-left: 6px solid #4CAF50;
         padding: 15px 20px;
-        border-radius: 8px;
+        border-radius: 12px;
         font-size: 18px;
         font-style: italic;
+        color: #e2e8f0 !important;
         margin-bottom: 20px;
         line-height: 1.5;
     }
-    .input-box {
-        border: 2px solid #4CAF50;
-        padding: 10px;
-        border-radius: 10px;
+
+    /* SIDEBAR CONTACT BOX - GLASS STYLE */
+    .contact-box {
+        background: rgba(30, 41, 59, 0.7); 
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 12px; 
+        padding: 15px; 
         margin-bottom: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+    .contact-item {
+        margin-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 8px;
+    }
+    .contact-item:last-child {
+        margin-bottom: 0;
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    .contact-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: #ffffff !important;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .contact-phone {
+        font-family: 'Courier New', monospace;
+        font-size: 15px;
+        color: #4ade80 !important; /* Bright Green */
+        margin-top: 4px;
+        padding-left: 2px;
+        letter-spacing: 0.5px;
+        font-weight: bold;
+    }
+    
+    /* INPUT FIELDS */
+    .stTextInput input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # --- STATE MANAGEMENT ---
-if 'step' not in st.session_state:
-    st.session_state.step = 'HOME'
-if 'history' not in st.session_state:
-    st.session_state.history = []
-if 'customer_concern' not in st.session_state:
-    st.session_state.customer_concern = ''
-if 'job_type' not in st.session_state:
-    st.session_state.job_type = ''
+if 'step' not in st.session_state: st.session_state.step = 'HOME'
+if 'history' not in st.session_state: st.session_state.history = []
+if 'customer_concern' not in st.session_state: st.session_state.customer_concern = ''
+if 'job_type' not in st.session_state: st.session_state.job_type = ''
+if 'triage_notes' not in st.session_state: st.session_state.triage_notes = ''
 
 def go_to(step_name):
-    """Save current step to history, then move to new step."""
     st.session_state.history.append(st.session_state.step)
     st.session_state.step = step_name
     st.rerun()
 
 def go_back():
-    """Pop the last step from history and go back to it."""
     if st.session_state.history:
         st.session_state.step = st.session_state.history.pop()
         st.rerun()
 
 def restart():
     st.session_state.step = 'HOME'
-    st.session_state.history = [] # Clear history on restart
+    st.session_state.history = []
     st.session_state.customer_concern = ''
     st.session_state.job_type = ''
-    st.session_state.triage_notes = '' # Reset triage notes
+    st.session_state.triage_notes = '' 
     st.rerun()
 
-# --- SIDEBAR INFO ---
+def mostrar_disponibilidad_central():
+    st.markdown("""
+    <div class="contact-box">
+        <h4 style="margin-top:0; color:#cbd5e1;">📅 Service Availability</h4>
+        <p><b>🔥 HVAC:</b> Feb 11 (Wed) - After 12 PM | Feb 12 (Thu) - Open</p>
+        <p><b>🚿 Plumbing:</b> Feb 11 (Wed) - Emergency Only | Feb 12 (Thu) - Open</p>
+        <p><b>🧹 Duct/Dryer:</b> Feb 12 (Thu) - Open</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+# --- SIDEBAR INFO (UPDATED) ---
 with st.sidebar:
-    # ✅ 1. TU LOGO DE SWIFT PRO (Restaurado)
-    st.image("image_7.png") 
+    # Use logo here or not, but centered logic is in HOME
+   # st.image("image_7.png", width=150) 
     
     if st.session_state.history:
         if st.button("⬅️ BACK"):
@@ -144,26 +198,38 @@ with st.sidebar:
     
     st.title("🧠 CSR Command Center")
     
-    # ✅ 2. TELÉFONOS IMPORTANTES
-    st.info("""
-    ### 📞 Key Contacts
-    
-    **👩‍💼 Hannah (Cell):** 571-726-9008
-    
-    **👨‍🔧 Jevon (Dialpad):** 703-214-9783
-    
-    **👨‍🔧 Raul:** 571-301-3134
-    
-    **👨‍🔧 Gio:** (703) 661-9006
-    
-    **📞 Araksan (Dialpad):** (703) 239-7626
-    
-    **📱 Araksan (Cell):** 703-928-0937
-    """)
-    
-    st.divider()
-    
-    # 3. El Bloc de Notas (Scratchpad)
+    # --- UPDATED KEY CONTACTS SECTION (Uses new .contact-box CSS) ---
+    with st.expander("📞 Key Contacts (Click to View)", expanded=False):
+        st.markdown("""
+        <div class="contact-box" style="margin-bottom: 0;">
+            <div class="contact-item">
+                <div class="contact-name">👩‍💼 Hannah (Cell)</div>
+                <div class="contact-phone">571-726-9008</div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-name">👨‍🔧 Jevon (Dialpad)</div>
+                <div class="contact-phone">703-214-9783</div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-name">👨‍🔧 Raul</div>
+                <div class="contact-phone">571-301-3134</div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-name">👨‍🔧 Gio</div>
+                <div class="contact-phone">(703) 661-9006</div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-name">📞 Araksan (Dialpad)</div>
+                <div class="contact-phone">(703) 239-7626</div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-name">📱 Araksan (Cell)</div>
+                <div class="contact-phone">703-928-0937</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    # Scratchpad
     if 'scratchpad' not in st.session_state:
         st.session_state.scratchpad = ""
     
@@ -184,6 +250,12 @@ with st.sidebar:
 
 # 1. HOME
 if st.session_state.step == 'HOME':
+    # --- LOGO CENTERING LOGIC ---
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.image("image_7.png", use_container_width=True)
+    # -----------------------------
+
     st.title("🏠 SwiftPro Call Center")
     st.markdown('<div class="big-script">“Thank you for calling SwiftPro Heating, Cooling & Plumbing. This is [Name]—how can I help you today?”</div>', unsafe_allow_html=True)
     st.caption("😊 Remember: Smile and have a great tone of voice.")
@@ -200,25 +272,27 @@ elif st.session_state.step == 'OUTBOUND_START':
     st.markdown('<div class="big-script">“Hi [Customer Name], this is [Name] with SwiftPro... I see you reached out about [Issue]. Wanted to make sure we get you taken care of.”</div>', unsafe_allow_html=True)
     if st.button("➡️ Continue"): go_to('LOCATION_CHECK')
 
+# 3. LOCATION CHECK
 elif st.session_state.step == 'LOCATION_CHECK':
     st.title("📍 Service Area")
     st.markdown('<div class="big-script">“Just to make sure you’re in our service area, what city are you calling from?”</div>', unsafe_allow_html=True)
     
-    # --- ADDED LOCATION QUICK-REFERENCE ---
+    # WRAP REFERENCE IN GLASS BOX
     with st.expander("🗺️ Reference: Covered Locations (NoVA)", expanded=True):
-        loc_col1, loc_col2 = st.columns(2)
-        with loc_col1:
-            st.markdown("""
-            **Fairfax County:** Springfield, Burke, Lorton, Fairfax, Vienna, McLean, Reston, Herndon, Chantilly, Centreville, Annandale.
-            
-            **Arlington & Alexandria:** (Inside the beltway, closer to DC).
-            """)
-        with loc_col2:
-            st.markdown("""
-            **Prince William County:** Woodbridge, Manassas, Dumfries, Dale City.
-            
-            **Loudoun County:** Ashburn, Leesburg, Sterling.
-            """)
+        st.markdown("""
+        <div class="contact-box">
+            <div style="display:flex; gap:20px;">
+                <div style="flex:1;">
+                    <b>Fairfax County:</b> Springfield, Burke, Lorton, Fairfax, Vienna, McLean, Reston, Herndon, Chantilly, Centreville, Annandale.<br><br>
+                    <b>Arlington & Alexandria:</b> (Inside the beltway).
+                </div>
+                <div style="flex:1;">
+                    <b>Prince William County:</b> Woodbridge, Manassas, Dumfries, Dale City.<br><br>
+                    <b>Loudoun County:</b> Ashburn, Leesburg, Sterling.
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
     with col1:
@@ -226,7 +300,7 @@ elif st.session_state.step == 'LOCATION_CHECK':
     with col2:
         if st.button("🚫 OUT OF AREA"): go_to('REFER_OUT')
 
-# 3. STEP: OUT OF AREA (REFER OUT)
+# 3.5 STEP: OUT OF AREA (REFER OUT)
 elif st.session_state.step == 'REFER_OUT':
     st.title("🚫 Out of Service Area")
     st.markdown('<div class="big-script">“I’m really sorry—we don’t service that area, but I’d be happy to point you in the right direction.”</div>', unsafe_allow_html=True)
@@ -251,69 +325,50 @@ elif st.session_state.step == 'CLIENT_STATUS':
             st.toast("Search profile in ServiceTitan...")
             go_to('ACKNOWLEDGE_ISSUE')
 
-# 5. ACKNOWLEDGE & LOG ISSUE (UPDATED SECTION)
+# 5. ACKNOWLEDGE & LOG ISSUE
 elif st.session_state.step == 'ACKNOWLEDGE_ISSUE':
     st.title("📝 Understanding the Issue")
     
-    # --- Option 1: They explained it ---
     st.markdown("#### ✅ **If they already explained the issue:**")
-    st.markdown(
-        '<div class="dialogue-box">'
-        '“Okay, absolutely. Let me ask you a couple quick questions so we can get this scheduled properly.”'
-        '</div>', 
-        unsafe_allow_html=True
-    )
+    st.markdown('<div class="dialogue-box">“Okay, absolutely. Let me ask you a couple quick questions so we can get this scheduled properly.”</div>', unsafe_allow_html=True)
 
-    # --- Option 2: They haven't explained it ---
     st.markdown("#### ✅ **If they have not explained the reason yet:**")
-    # Note: Added inline style to change border color to Orange/Yellow for differentiation
-    st.markdown(
-        '<div class="dialogue-box" style="border-left: 6px solid #FFD700;">'
-        '“Are you needing help with your heating and cooling system or something plumbing-related?”'
-        '</div>', 
-        unsafe_allow_html=True
-    )
+    st.markdown('<div class="dialogue-box" style="border-left: 6px solid #f59e0b; border-color: rgba(245, 158, 11, 0.3);">“Are you needing help with your heating and cooling system or something plumbing-related?”</div>', unsafe_allow_html=True)
     
-    # Input box for note taking
     st.markdown("### ✍️ Notes")
-    st.session_state.customer_concern = st.text_area(
-        "Write down the customer's concern here:", 
-        height=150,
-        placeholder="e.g. leaking faucet, no heat upstairs...",
-        label_visibility="collapsed"
-    )
+    st.session_state.customer_concern = st.text_area("Write down the customer's concern here:", height=150, placeholder="e.g. leaking faucet, no heat upstairs...", label_visibility="collapsed")
     
-    # Navigation Button
     if st.session_state.customer_concern:
         if st.button("✅ Saved. Continue to Category"):
             go_to('CATEGORY_SELECT')
     else:
-        # Show disabled or hint button if empty (optional, but good UX)
         st.caption("*Please enter a note to continue*")
 
-# 6. CATEGORY & JOB SELECTION (Combined)
+# 6. CATEGORY & JOB SELECTION
 elif st.session_state.step == 'CATEGORY_SELECT':
     st.title("🔧 Select Job Type")
     st.markdown('<div class="big-script">“What kind of issue are you experiencing today?”</div>', unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns(3)
     
-    # --- HVAC COLUMN ---
+    # HVAC COLUMN
     with col1:
         st.info("🔥 HVAC")
         hvac_options = [
             "Select job...",
-            "No Heat Repair", "No AC Repair", "Maintenance (Inspections, Cleanings) ", 
+            "No Heat Repair", 
+            "No AC Repair", 
+            "Maintenance (Inspections, Cleanings)", 
             "Service/Repair"
         ]
         hvac_choice = st.selectbox("HVAC List:", hvac_options, label_visibility="collapsed")
         
         if hvac_choice != "Select job...":
             if st.button("➡️ GO: HVAC"):
-                st.session_state.job_type = hvac_choice
+                st.session_state.job_type = hvac_choice.strip()
                 go_to('HVAC_TRIAGE')
 
-    # --- PLUMBING COLUMN ---
+    # PLUMBING COLUMN
     with col2:
         st.info("🚿 PLUMBING")
         plumb_options = [
@@ -328,7 +383,7 @@ elif st.session_state.step == 'CATEGORY_SELECT':
                 st.session_state.job_type = plumb_choice
                 go_to('PLUMB_TRIAGE')
 
-    # --- SALES/ESTIMATE COLUMN ---
+    # SALES/ESTIMATE COLUMN
     with col3:
         st.info("🆕 ESTIMATES")
         sales_options = [
@@ -343,31 +398,134 @@ elif st.session_state.step == 'CATEGORY_SELECT':
                 st.session_state.job_type = sales_choice
                 go_to('SALES_TRIAGE')
 
-# 8. TRIAGE QUESTIONS (Interactive)
+# 8. HVAC TRIAGE (CUSTOMIZED PER JOB)
 elif st.session_state.step == 'HVAC_TRIAGE':
-    st.title("🔥 HVAC Discovery")
-    st.info(f"Job: {st.session_state.job_type}")
+    st.title(f"🔥 Discovery: {st.session_state.job_type}")
     
-    with st.form("hvac_triage_form"):
-        st.markdown("### 🗣️ Ask the Customer:")
-        q1 = st.text_input("1. 🕒 How long has this been going on?", key="hvac_q1")
-        q2 = st.selectbox("2. ⚡ Is it Gas or Electric?", ["Unsure", "Gas", "Electric", "Oil", "Propane"], key="hvac_q2")
-        q3 = st.text_input("3. 🏚️ About how old is the system?", key="hvac_q3")
-        q4 = st.text_input("4. 🔊 Any weird noises or smells?", key="hvac_q4")
+    # ---------------- NO HEAT REPAIR ----------------
+    if st.session_state.job_type == "No Heat Repair":
+        st.markdown('<div class="dialogue-box">“I’m sorry to hear about the heat. Let’s get some details so we can help.”</div>', unsafe_allow_html=True)
         
-        st.error("⚠️ EMERGENCY IF: Gas Smell OR No Heat < 32°F")
-        
-        submitted = st.form_submit_button("✅ Save Notes & Continue")
-        if submitted:
-            st.session_state.triage_notes = f"""
-            - Duration: {q1}
-            - Type: {q2}
-            - Age: {q3}
-            - Symptoms: {q4}
-            """
-            go_to('HVAC_PRICE')
+        with st.form("hvac_no_heat_form"):
+            st.markdown("### 🗣️ Ask the Customer:")
+            q1 = st.text_input("1. 🕒 How long has the heat not been working?")
+            q2 = st.selectbox("2. 📉 Is it completely not turning on, or just blowing cold air?", ["Completely Off", "Blowing Cold Air", "Cycling Weirdly"])
             
-    if st.button("🚨 EMERGENCY"): go_to('EMERGENCY')
+            # Special Handling for Gas/Electric question
+            col_a, col_b = st.columns([2, 1])
+            with col_a:
+                q3 = st.selectbox("3. ⚡ Is your system gas or electric?", ["Gas", "Electric", "Oil", "Propane", "Unsure"])
+            with col_b:
+                 st.info("💡 **If unsure:** say “That’s okay, we’ll take a look.”")
+
+            q4 = st.text_input("4. 🏚️ About how old is the system?")
+            q5 = st.text_input("5. 🔊 Any unusual smells, loud noises, or error codes?")
+            q6 = st.selectbox("6. 🔥 Are you using space heaters right now?", ["No", "Yes"])
+
+            # URGENCY TRIGGERS
+            st.error("""
+            **⚠ EMERGENCY IF:**
+            * Gas smell
+            * No heat & outdoor temp below freezing
+            * Elderly, infants, medical conditions in home
+            """)
+            
+            submitted = st.form_submit_button("✅ Save Notes & Continue")
+            if submitted:
+                st.session_state.triage_notes = f"NO HEAT:\n- Duration: {q1}\n- Behavior: {q2}\n- Fuel: {q3}\n- Age: {q4}\n- Symptoms: {q5}\n- Space Heaters: {q6}"
+                go_to('HVAC_PRICE')
+
+    # ---------------- NO AC REPAIR ----------------
+    elif st.session_state.job_type == "No AC Repair":
+        st.markdown('<div class="dialogue-box">“It’s tough without AC. Let’s see what’s going on.”</div>', unsafe_allow_html=True)
+        
+        with st.form("hvac_no_ac_form"):
+            st.markdown("### 🗣️ Ask the Customer:")
+            q1 = st.text_input("1. 🕒 How long has the AC not been working?")
+            q2 = st.selectbox("2. 📉 Is it completely not turning on, or running but not cooling?", ["Not Turning On", "Running No Cool", "Cycling"])
+            q3 = st.selectbox("3. 🌬️ Is warm air coming out of the vents?", ["Yes", "No", "Unsure"])
+            q4 = st.selectbox("4. 🏡 Is the outdoor unit running?", ["Yes", "No", "Unsure"])
+            q5 = st.selectbox("5. 💧 Any water leaking inside near the air handler?", ["No", "Yes"])
+            q6 = st.text_input("6. 🔊 Any unusual noises or smells?")
+            q7 = st.text_input("7. 🏚️ About how old is the system?")
+
+            # URGENCY TRIGGERS
+            st.error("""
+            **⚠ EMERGENCY IF:**
+            * Home over 85–90° inside
+            * Elderly, babies, medical needs
+            * Water leaking through ceiling
+            * Burning smell
+            """)
+            
+            submitted = st.form_submit_button("✅ Save Notes & Continue")
+            if submitted:
+                st.session_state.triage_notes = f"NO AC:\n- Duration: {q1}\n- Behavior: {q2}\n- Warm Air: {q3}\n- Outdoor Unit: {q4}\n- Leaks: {q5}\n- Symptoms: {q6}\n- Age: {q7}"
+                go_to('HVAC_PRICE')
+
+    # ---------------- MAINTENANCE ----------------
+    elif "Maintenance" in st.session_state.job_type:
+        st.markdown('<div class="dialogue-box">“Maintenance is a great idea to keep things running smoothly.”</div>', unsafe_allow_html=True)
+        
+        with st.form("hvac_maint_form"):
+            st.markdown("### 🗣️ Ask the Customer:")
+            q1 = st.selectbox("1. 🌡️ Is this for heating, cooling, or both?", ["Heating", "Cooling", "Both"])
+            q2 = st.text_input("2. 📅 When was the last maintenance performed?")
+            q3 = st.text_input("3. 🤔 Have you noticed anything unusual recently?")
+            q4 = st.selectbox("4. ✅ Is the system working normally right now?", ["Yes", "No", "Not really"])
+            q5 = st.text_input("5. 🏚️ How old is the equipment?")
+            q6 = st.selectbox("6. 📋 Are you currently on a maintenance plan?", ["No", "Yes", "Unsure"])
+
+            # OPPORTUNITY TRIGGERS
+            st.success("""
+            **🎯 OPPORTUNITY TRIGGERS:**
+            * System 10+ years old
+            * Hasn’t been serviced in 2+ years
+            * Minor complaints mentioned casually
+            """)
+            
+            submitted = st.form_submit_button("✅ Save Notes & Continue")
+            if submitted:
+                st.session_state.triage_notes = f"MAINTENANCE:\n- Type: {q1}\n- Last Service: {q2}\n- Unusual: {q3}\n- Status: {q4}\n- Age: {q5}\n- Plan: {q6}"
+                go_to('HVAC_PRICE')
+
+    # ---------------- SERVICE / GENERAL REPAIR ----------------
+    elif "Service" in st.session_state.job_type:
+        st.markdown('<div class="dialogue-box">“Let’s figure out exactly what’s going on with the system.”</div>', unsafe_allow_html=True)
+        
+        with st.form("hvac_service_form"):
+            st.markdown("### 🗣️ Ask the Customer:")
+            q1 = st.text_area("1. 📝 What exactly is the system doing that concerns you?")
+            q2 = st.text_input("2. 🕒 When did you first notice this?")
+            q3 = st.selectbox("3. ⚙️ Is the system still running?", ["Yes", "No", "Intermittently"])
+            q4 = st.selectbox("4. 📉 Is it heating/cooling properly, just making noise or acting inconsistent?", ["Not Heating/Cooling", "Just Noise", "Inconsistent", "Other"])
+            q5 = st.text_input("5. 🛠️ Any recent repairs or work done?")
+            q6 = st.text_input("6. 🏚️ About how old is the system?")
+
+            # ESCALATION TRIGGERS
+            st.warning("""
+            **⚠ ESCALATE IF:**
+            * Electrical burning smell
+            * Loud banging/grinding
+            * Water actively leaking
+            * Breaker repeatedly tripping
+            """)
+            
+            submitted = st.form_submit_button("✅ Save Notes & Continue")
+            if submitted:
+                st.session_state.triage_notes = f"SERVICE/REPAIR:\n- Concern: {q1}\n- Onset: {q2}\n- Running: {q3}\n- Nature: {q4}\n- History: {q5}\n- Age: {q6}"
+                go_to('HVAC_PRICE')
+
+    # ---------------- FALLBACK ----------------
+    else:
+        st.warning("⚠️ Generic HVAC Logic (Category not specifically matched)")
+        with st.form("generic_hvac"):
+            notes = st.text_area("Enter triage notes:")
+            if st.form_submit_button("✅ Continue"):
+                st.session_state.triage_notes = notes
+                go_to('HVAC_PRICE')
+            
+    if st.button("🚨 EMERGENCY / ESCALATION"): go_to('EMERGENCY')
 
 elif st.session_state.step == 'PLUMB_TRIAGE':
     st.title("🚿 Plumbing Discovery")
@@ -418,7 +576,7 @@ elif st.session_state.step == 'HVAC_PRICE':
     st.title("💰 The Pivot (HVAC)")
     mostrar_disponibilidad_central() 
     
-    st.markdown('<div class="big-script">“ HVAC, it’s only <b>$99</b> to send a tech out to diagnose the system... Our soonest availability is [Day] between 8-12 or 12-5.”</div>', unsafe_allow_html=True)
+    st.markdown('<div class="big-script">“For HVAC, it’s only <b>$99</b> to send a tech out to diagnose the system... Our soonest availability is [Day] between 8-12 or 12-5.”</div>', unsafe_allow_html=True)
     st.warning("🛑 DO NOT PAUSE after the price!")
     
     col1, col2 = st.columns(2)
@@ -430,7 +588,7 @@ elif st.session_state.step == 'HVAC_PRICE':
 elif st.session_state.step == 'PLUMB_PRICE':
     st.title("💰 The Pivot (Plumbing)")
     mostrar_disponibilidad_central()
-    st.markdown('<div class="big-script">" plumbing, it’s only <b>$49</b> to send a tech out... Our soonest availability is [Day] between 8-12 or 12-5.”</div>', unsafe_allow_html=True)
+    st.markdown('<div class="big-script">“For plumbing, it’s only <b>$49</b> to send a tech out... Our soonest availability is [Day] between 8-12 or 12-5.”</div>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
@@ -449,19 +607,15 @@ elif st.session_state.step == 'OBJECTION':
     st.title("🛡️ Handling Objections")
     st.info("💡 Goal: Calm delivery + Immediate scheduling.")
     
-    # 1. TIME WINDOW OBJECTION
     with st.expander("⏳ Objection: “That’s a big window” (8-12 or 12-5)", expanded=True):
         st.markdown('<div class="big-script">“Totally understand. You’ll receive a text as soon as the technician is on the way to help narrow the timeframe.”</div>', unsafe_allow_html=True)
 
-    # 2. WRONG DAY OBJECTION
     with st.expander("📅 Objection: “That day doesn’t work for me”"):
         st.markdown('<div class="big-script">“No problem at all. We schedule in 8–12 or 12–5 windows. What day works best for you within one of those?”</div>', unsafe_allow_html=True)
 
-    # 3. URGENCY OBJECTION
     with st.expander("🚨 Objection: “I need it sooner”"):
         st.markdown('<div class="big-script">“I completely understand. Let’s get you scheduled now to hold your spot, and I’ll check with my manager to see if there’s any way to get you in sooner. If something opens up, I’ll reach out immediately.”</div>', unsafe_allow_html=True)
 
-    # 4. PRICE OBJECTION
     with st.expander("💸 Objection: “The dispatch fee is too high”"):
         st.markdown('<div class="big-script">“Totally understand. The fee covers the trip and a full diagnosis by a certified expert. Plus, if you join our Membership ($20/mo), you get 15% off repairs.”</div>', unsafe_allow_html=True)
 
@@ -491,7 +645,7 @@ elif st.session_state.step == 'CUSTOMER_INFO':
         rec_tags.append("Repair Inquiry")
 
     # 2. Tags by Lead Temp
-    if any(x in notes or x in concern for x in ["leak", "no heat", "emergency", "flood", "gas", "spark"]):
+    if any(x in notes or x in concern for x in ["leak", "no heat", "emergency", "flood", "gas", "spark", "burning"]):
         rec_tags.append("Hot Lead")
     else:
         rec_tags.append("Warm Lead")
@@ -531,4 +685,24 @@ elif st.session_state.step == 'CUSTOMER_INFO':
     st.divider()
     
     if st.button("✅ I HAVE BOOKED IT IN SERVICETITAN"):
-        go_to('CLOSE_CALL')
+        restart()
+
+elif st.session_state.step == 'EMERGENCY':
+    st.title("🚨 Emergency Protocol")
+    st.error("STOP. Do not schedule standard service.")
+    st.markdown("""
+    ### ⚠️ Immediate Actions:
+    
+    **For Gas Smells:**
+    1. Tell them: *"Please evacuate the home immediately and call your gas utility provider or 911 from a safe distance."*
+    2. Do NOT book a standard tech until the utility company declares it safe.
+
+    **For Major Water Damage:**
+    1. Tell them: *"If it's safe to do so, please shut off your main water valve immediately."*
+    
+    **For Medical Emergencies (No Heat/Cool):**
+    1. Check for **Space Heaters** (temporary fix).
+    2. Consult Manager (Hannah/Jevon) for **Priority Dispatch**.
+    """)
+    
+    if st.button("🔙 Back to Triage"): go_back()
