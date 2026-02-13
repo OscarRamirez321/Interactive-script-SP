@@ -15,7 +15,7 @@ st.markdown("""
     }
 
     /* 2. REGLA MAESTRA DE TEXTO BLANCO */
-    h1, h2, h3, h4, p, li, span, label, .stMarkdown, div {
+    h1, h2, h3, h4, p, li, span, label, .stMarkdown, {
         color: #f8f9fa !important;
     }
 
