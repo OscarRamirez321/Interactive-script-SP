@@ -4,183 +4,145 @@ import base64
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="SwiftPro Navigator", page_icon="🔧", layout="centered")
 
+# --- VISUAL STYLES (COLOR PRO + FUNCTIONAL FIX) ---
 st.markdown("""
     <style>
-    /* 1. FONDO GENERAL */
+    /* 1. FONDO GENERAL CON UN TOQUE AZULADO */
     .stApp {
-        background-color: #0e1117;
+        background-color: #0f172a; /* Azul noche profundo, menos "negro muerto" */
     }
     section[data-testid="stSidebar"] {
-        background-color: #1c2333;
+        background-color: #1e293b; /* Azul grisáceo elegante */
+        border-right: 1px solid #334155;
     }
 
-    /* 2. REGLA MAESTRA DE TEXTO BLANCO */
-    h1, h2, h3, h4, p, li, span, label, .stMarkdown, {
-        color: #f8f9fa !important;
+    /* 2. TEXTOS Y TÍTULOS (AQUÍ ESTÁ EL COLOR) */
+    h1 {
+        color: #ff6b35 !important; /* NARANJA SWIFTPRO */
+        font-weight: 800 !important;
+        text-shadow: 0px 0px 10px rgba(255, 107, 53, 0.3);
+    }
+    h2, h3 {
+        color: #38bdf8 !important; /* CELESTE BRILLANTE */
+    }
+    h4, p, li, span, label, .stMarkdown {
+        color: #e2e8f0 !important; /* Blanco hueso (más suave a la vista) */
     }
 
     /* ============================================================
-       CORRECCIÓN 1: EL MENÚ DESPLEGABLE (DROPDOWN / SELECTBOX)
-       Objetivo: Fondo Oscuro #1c2333 para que se vean las letras.
+       CORRECCIÓN TÉCNICA (NO TOCAR - MANTIENE TODO VISIBLE)
        ============================================================ */
     
-    /* El contenedor flotante del menú */
-    div[data-baseweb="popover"],
-    div[data-baseweb="popover"] > div,
-    div[data-baseweb="menu"],
-    ul[data-baseweb="menu"] {
-        background-color: #1c2333 !important; /* FONDO OSCURO OBLIGATORIO */
-        border: none !important;
+    /* Dropdowns oscuros */
+    div[data-baseweb="popover"], div[data-baseweb="menu"], ul[data-baseweb="menu"] {
+        background-color: #1e293b !important;
+        border: 1px solid #38bdf8 !important; /* Borde Celeste */
     }
-
-    /* Las opciones individuales (renglones) */
     li[data-baseweb="option"] {
-        background-color: #1c2333 !important;
+        background-color: #1e293b !important;
+        color: white !important;
+    }
+    li[data-baseweb="option"] * {
+        color: white !important;
+    }
+    li[data-baseweb="option"]:hover, li[data-baseweb="option"][aria-selected="true"] {
+        background-color: #ff6b35 !important; /* Naranja al seleccionar */
         color: white !important;
     }
 
-    /* El texto DENTRO de las opciones */
-    li[data-baseweb="option"] div {
-        color: white !important;
+    /* Bloque de código (Notas ServiceTitan) */
+    div[data-testid="stCodeBlock"] {
+        background-color: #020617 !important;
+        border: 1px solid #ff6b35; /* Borde Naranja Fino */
+        border-radius: 8px;
     }
-
-    /* Efecto Hover (Rojo al pasar el mouse) */
-    li[data-baseweb="option"]:hover,
-    li[data-baseweb="option"][aria-selected="true"] {
-        background-color: #ff4b4b !important;
-        color: white !important;
-    }
-
-    /* ============================================================
-       CORRECCIÓN 2: EL CUADRO DE CÓDIGO (SERVICETITAN NOTES)
-       Objetivo: Fondo Negro estilo Terminal para que se lea.
-       ============================================================ */
-    
-    /* La caja completa del bloque de código */
-    .stCodeBlock {
-        background-color: #000000 !important; /* FONDO NEGRO */
-        border: 1px solid #333 !important;
-        border-radius: 8px !important;
-    }
-    
-    /* El área interna donde está el texto */
-    .stCodeBlock pre {
-        background-color: #000000 !important;
-    }
-    
-    /* El texto mismo del código */
-    .stCodeBlock code {
-        color: #ffffff !important; /* TEXTO BLANCO (O verde si prefieres) */
-        background-color: #000000 !important;
-    }
-    
-    /* El botón de copiar en la esquina del bloque de código */
-    .stCodeBlock button {
-        background-color: #333 !important;
-        color: white !important;
+    div[data-testid="stCodeBlock"] pre, div[data-testid="stCodeBlock"] code {
+        background-color: #020617 !important;
+        color: #4ade80 !important; /* Texto Verde Matrix */
     }
 
     /* ============================================================
-       CORRECCIÓN 3: INPUTS Y OTRAS CAJAS
+       DISEÑO VISUAL (CAJAS Y BOTONES)
        ============================================================ */
     
-    /* Cajas de texto (Inputs) */
-    div[data-baseweb="input"] {
-        background-color: #1c2333 !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    }
-    .stTextInput input {
-        background-color: #1c2333 !important;
+    /* Inputs y Selectboxes */
+    div[data-baseweb="input"], div[data-baseweb="select"] > div {
+        background-color: #1e293b !important;
+        border: 1px solid #475569 !important;
         color: white !important;
-        caret-color: white !important;
     }
+    .stTextInput input { color: white !important; }
     
-    /* Caja de selección cerrada */
-    div[data-baseweb="select"] > div {
-        background-color: #1c2333 !important;
-        color: white !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    }
-    
-    /* Flecha del dropdown */
-    div[data-baseweb="select"] svg {
-        fill: white !important;
-    }
-
-    /* Expander (Acordeón) */
+    /* Expanders (Acordeones) */
     div[data-testid="stExpander"] {
-        background-color: #1c2333 !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        color: white !important;
+        background-color: rgba(30, 41, 59, 0.7) !important;
+        border: 1px solid #38bdf8 !important; /* Borde Celeste */
+        border-radius: 10px;
     }
     div[data-testid="stExpander"] > details > summary {
-        background-color: #1c2333 !important;
-        color: white !important;
+        color: #38bdf8 !important; /* Título celeste */
+        font-weight: 600;
     }
     div[data-testid="stExpander"] > details > summary:hover {
-        color: #ff4b4b !important;
+        color: #ff6b35 !important;
     }
 
-    /* ============================================================
-       ESTILOS PERSONALIZADOS (BOTONES, CAJAS DE TEXTO)
-       ============================================================ */
-    
-    /* Scratchpad (Bloc de notas blanco - ÚNICA COSA BLANCA) */
-    .stTextArea textarea {
-        background-color: #ffffff !important; 
-        color: #000000 !important;
-        caret-color: black !important;
-    }
-    .stTextArea label {
-        color: white !important;
-    }
-
-    /* Botones Grandes */
+    /* Botones */
     .stButton button {
-        width: 100%;
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        color: #ffffff !important;
+        border: 1px solid #38bdf8;
         border-radius: 12px;
-        height: 3.5em;
-        font-weight: 600;
-        font-size: 16px;
-        background-color: rgba(255, 255, 255, 0.1); 
-        color: white !important;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
     .stButton button:hover {
-        border-color: #ff4b4b;
-        background-color: rgba(255, 75, 75, 0.2);
-        color: #ff4b4b !important;
+        border-color: #ff6b35;
+        color: #ff6b35 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(255, 107, 53, 0.4); /* Resplandor Naranja */
     }
 
-    /* Cajas de diálogo */
+    /* CAJAS PERSONALIZADAS (EL TOQUE PRO) */
     .big-script {
-        font-size: 20px !important;
-        font-weight: 500;
-        color: #ffffff !important;
-        background: #1e293b;
-        padding: 24px;
+        background: linear-gradient(90deg, rgba(15,23,42,0.9) 0%, rgba(30,41,59,0.9) 100%);
+        border: 1px solid #475569;
+        border-left: 6px solid #ff6b35; /* Borde Naranja */
         border-radius: 16px;
-        border-left: 6px solid #ff4b4b;
+        padding: 24px;
         margin-bottom: 25px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
     }
-    .dialogue-box, .contact-box {
-        background: #1e293b;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    .dialogue-box {
+        background-color: rgba(30, 41, 59, 0.6);
+        border: 1px solid #4ade80; /* Verde éxito */
+        border-left: 6px solid #4ade80;
+        border-radius: 12px;
+        padding: 20px;
+        color: #f1f5f9 !important;
+    }
+
+    .contact-box {
+        background-color: #1e293b;
+        border: 1px solid #38bdf8;
         border-radius: 12px;
         padding: 15px;
         color: white !important;
     }
-    .dialogue-box {
-        border-left: 6px solid #4CAF50;
-        font-size: 18px;
-        font-style: italic;
-        margin-bottom: 20px;
-    }
 
-    /* Contactos Sidebar */
-    .contact-name { color: #ffffff !important; font-weight: 600; }
-    .contact-phone { color: #4ade80 !important; font-family: monospace; }
-    
+    /* Scratchpad */
+    .stTextArea textarea {
+        background-color: #f8fafc !important; /* Blanco casi puro */
+        color: #0f172a !important; /* Texto oscuro */
+        border: 2px solid #cbd5e1;
+    }
+    .stTextArea label { color: #38bdf8 !important; }
+
+    /* Contactos */
+    .contact-name { color: #e2e8f0 !important; font-weight: 700; }
+    .contact-phone { color: #38bdf8 !important; font-family: monospace; font-size: 16px; }
+
     /* Ocultar Header */
     header {visibility: hidden;}
     </style>
