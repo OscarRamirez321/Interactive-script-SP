@@ -124,8 +124,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ✅ Call Background
-add_background("image_7.png")
 
 # --- VISUAL STYLES (THE GLASS PRO UPGRADE) ---
 st.markdown("""
