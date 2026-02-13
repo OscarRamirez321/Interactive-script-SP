@@ -1,47 +1,128 @@
 import streamlit as st
 import base64
 
-# --- FUNCTION TO ADD BACKGROUND ---
-def add_background(image_file):
-    try:
-        with open(image_file, "rb") as f:
-            encoded_string = base64.b64encode(f.read()).decode()
-        
-        st.markdown(
-            f"""
-            <style>
-            /* 1. Force the Main App Background to Dark Navy */
-            .stApp {{
-                background-color: #0e1117; /* This matches standard Dark Mode */
-            }}
 
-            /* 2. Add the Logo in the center on top of the dark color */
-            [data-testid="stAppViewContainer"] {{
-                background-image: url("data:image/png;base64,{encoded_string}");
-                background-repeat: no-repeat;
-                background-position: center center; /* Centered Logo */
-                background-attachment: fixed;       /* Stays fixed while scrolling */
-                background-size: 350px;             /* Adjust logo size here */
-            }}
-            
-            /* 3. Push content down slightly so it doesn't overlap the top too much */
-            [data-testid="block-container"] {{
-                padding-top: 50px !important; 
-            }}
-            
-            /* 4. Hide Header */
-            header {{
-                visibility: hidden;
-            }}
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
-    except FileNotFoundError:
-        pass
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="SwiftPro Navigator", page_icon="🔧", layout="centered")
+
+# --- VISUAL STYLES (DARK MODE & PRO GLASS) ---
+st.markdown("""
+    <style>
+    /* 1. FORCE DARK BACKGROUNDS */
+    .stApp {
+        background-color: #0e1117; /* Main Page Dark Navy */
+    }
+    
+    section[data-testid="stSidebar"] {
+        background-color: #1c2333; /* Sidebar Dark Blue-Grey */
+    }
+
+    /* 2. FORCE WHITE TEXT EVERYWHERE */
+    h1, h2, h3, h4, p, li, span, div, label, .stMarkdown {
+        color: #f8f9fa !important;
+    }
+
+    /* 3. HIDE DEFAULT HEADER */
+    header {
+        visibility: hidden;
+    }
+    
+    /* 4. BUTTON STYLING (Glass Look) */
+    .stButton button {
+        width: 100%;
+        border-radius: 12px;
+        height: 3.5em;
+        font-weight: 600;
+        font-size: 16px;
+        background-color: rgba(255, 255, 255, 0.1); 
+        color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s;
+        backdrop-filter: blur(5px);
+    }
+    .stButton button:hover {
+        border-color: #ff4b4b;
+        background-color: rgba(255, 75, 75, 0.2);
+        color: #ff4b4b !important;
+    }
+
+    /* 5. BIG SCRIPT BOX */
+    .big-script {
+        font-size: 20px !important;
+        font-weight: 500;
+        color: #ffffff !important;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(12px);
+        padding: 24px;
+        border-radius: 16px;
+        border-left: 6px solid #ff4b4b;
+        margin-bottom: 25px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    /* 6. DIALOGUE BOX */
+    .dialogue-box {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-left: 6px solid #4CAF50;
+        padding: 15px 20px;
+        border-radius: 12px;
+        font-size: 18px;
+        font-style: italic;
+        color: #e2e8f0 !important;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+    /* 7. SIDEBAR CONTACT BOX */
+    .contact-box {
+        background: rgba(255, 255, 255, 0.05); 
+        backdrop-filter: blur(10px);
+        border-radius: 12px; 
+        padding: 15px; 
+        margin-bottom: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .contact-item {
+        margin-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 8px;
+    }
+    .contact-item:last-child {
+        margin-bottom: 0;
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    .contact-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: #ffffff !important;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .contact-phone {
+        font-family: 'Courier New', monospace;
+        font-size: 15px;
+        color: #4ade80 !important;
+        margin-top: 4px;
+        font-weight: bold;
+    }
+    
+    /* 8. INPUT FIELDS (Dark Background) */
+    .stTextInput input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
+        background-color: rgba(0, 0, 0, 0.3);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # ✅ Call Background
 add_background("image_7.png")
