@@ -10,21 +10,26 @@ def add_background(image_file):
         st.markdown(
             f"""
             <style>
-            /* Apply directly to the main app container */
+            /* 1. Force the Main App Background to Dark Navy */
+            .stApp {{
+                background-color: #0e1117; /* This matches standard Dark Mode */
+            }}
+
+            /* 2. Add the Logo in the center on top of the dark color */
             [data-testid="stAppViewContainer"] {{
                 background-image: url("data:image/png;base64,{encoded_string}");
                 background-repeat: no-repeat;
-                background-position: center center; 
-                background-size: 300px; 
-                background-attachment: fixed; 
+                background-position: center center; /* Centered Logo */
+                background-attachment: fixed;       /* Stays fixed while scrolling */
+                background-size: 350px;             /* Adjust logo size here */
             }}
             
-            /* Push the text down so it doesn't cover the logo */
+            /* 3. Push content down slightly so it doesn't overlap the top too much */
             [data-testid="block-container"] {{
                 padding-top: 50px !important; 
             }}
             
-            /* Hide the default Streamlit header decoration */
+            /* 4. Hide Header */
             header {{
                 visibility: hidden;
             }}
@@ -228,7 +233,7 @@ with st.sidebar:
             </div>
         </div>
         """, unsafe_allow_html=True)
-        
+
     # Scratchpad
     if 'scratchpad' not in st.session_state:
         st.session_state.scratchpad = ""
@@ -576,7 +581,7 @@ elif st.session_state.step == 'HVAC_PRICE':
     st.title("💰 The Pivot (HVAC)")
     mostrar_disponibilidad_central() 
     
-    st.markdown('<div class="big-script">“For HVAC, it’s only <b>$99</b> to send a tech out to diagnose the system... Our soonest availability is [Day] between 8-12 or 12-5.”</div>', unsafe_allow_html=True)
+    st.markdown('<div class="big-script">“For the diagnostic, it is only <b>$99</b> Our soonest availability is [Day] between 8am-12pm or 12pm-5pm. Which of those works best for you?”</div>', unsafe_allow_html=True)
     st.warning("🛑 DO NOT PAUSE after the price!")
     
     col1, col2 = st.columns(2)
@@ -588,7 +593,7 @@ elif st.session_state.step == 'HVAC_PRICE':
 elif st.session_state.step == 'PLUMB_PRICE':
     st.title("💰 The Pivot (Plumbing)")
     mostrar_disponibilidad_central()
-    st.markdown('<div class="big-script">“For plumbing, it’s only <b>$49</b> to send a tech out... Our soonest availability is [Day] between 8-12 or 12-5.”</div>', unsafe_allow_html=True)
+    st.markdown('<div class="big-script">“For the diagnostic, it is only<b>$49</b> Our soonest availability is [Day] between 8am-12pm or 12pm 5pm. Which of those works best for you?”</div>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
