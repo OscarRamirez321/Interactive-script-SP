@@ -6,75 +6,40 @@ import base64
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="SwiftPro Navigator", page_icon="🔧", layout="centered")
 
-# --- VISUAL STYLES (CORREGIDO - SIN BORDES BLANCOS) ---
+# --- VISUAL STYLES (DARK MODE & PRO GLASS) ---
 st.markdown("""
     <style>
-    /* 1. FONDO GENERAL (NEGRO AZULADO) */
+    /* 1. FORCE DARK BACKGROUNDS */
     .stApp {
-        background-color: #0e1117;
+        background-color: #0e1117; /* Main Page Dark Navy */
     }
+    
     section[data-testid="stSidebar"] {
-        background-color: #1c2333;
+        background-color: #1c2333; /* Sidebar Dark Blue-Grey */
     }
 
-    /* 2. TEXTOS EN BLANCO */
-    h1, h2, h3, h4, p, li, span, label, div, .stMarkdown {
+    /* 2. FORCE WHITE TEXT EVERYWHERE */
+    h1, h2, h3, h4, p, li, span, div, label, .stMarkdown {
         color: #f8f9fa !important;
     }
 
-    /* 3. ARREGLO DE LOS DROPDOWNS (SELECT BOXES) - CAJA OSCURA */
-    div[data-baseweb="select"] > div {
-        background-color: #1c2333 !important; /* Fondo Oscuro Sólido */
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        color: white !important;
+    /* 3. HIDE DEFAULT HEADER */
+    header {
+        visibility: hidden;
     }
-    /* El texto dentro del dropdown */
-    div[data-baseweb="select"] span {
-        color: white !important;
-    }
-    /* El menú que se despliega (las opciones) */
-    ul[data-baseweb="menu"] {
-        background-color: #1c2333 !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    }
-    li[data-baseweb="option"] {
-        color: white !important;
-    }
-
-    /* 4. ARREGLO DE INPUTS (TEXTO DE UNA LÍNEA) - CAJA OSCURA */
-    .stTextInput input {
-        background-color: #1c2333 !important; /* Fondo Oscuro Sólido */
-        color: white !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        border-radius: 8px;
-    }
-
-    /* 5. ARREGLO DEL SCRATCHPAD (ESTILO PAPEL BLANCO) */
-    /* Este es el único que dejamos blanco porque es el bloc de notas */
-    .stTextArea textarea {
-        background-color: #ffffff !important; 
-        color: #000000 !important;
-        caret-color: black;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    /* 6. CAJAS DE SERVICETITAN (CODE BLOCKS) - NEGRO MATRIX */
-    .stCodeBlock {
-        background-color: #000000 !important;
-        border: 1px solid #333 !important;
-    }
-    .stCodeBlock code {
-        color: #00ff00 !important; /* Texto Verde Matrix */
-        font-family: 'Courier New', monospace !important;
-    }
-
-    /* 7. BOTONES (ESTILO GLASS) */
+    
+    /* 4. BUTTON STYLING (Glass Look) */
     .stButton button {
+        width: 100%;
+        border-radius: 12px;
+        height: 3.5em;
+        font-weight: 600;
+        font-size: 16px;
         background-color: rgba(255, 255, 255, 0.1); 
         color: white !important;
         border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
         transition: all 0.3s;
+        backdrop-filter: blur(5px);
     }
     .stButton button:hover {
         border-color: #ff4b4b;
@@ -82,31 +47,203 @@ st.markdown("""
         color: #ff4b4b !important;
     }
 
-    /* 8. CAJAS DE DIÁLOGO Y CONTACTOS */
-    .dialogue-box, .contact-box {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 15px;
+    /* 5. BIG SCRIPT BOX */
+    .big-script {
+        font-size: 20px !important;
+        font-weight: 500;
+        color: #ffffff !important;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(12px);
+        padding: 24px;
+        border-radius: 16px;
+        border-left: 6px solid #ff4b4b;
+        margin-bottom: 25px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     }
+
+    /* 6. DIALOGUE BOX */
     .dialogue-box {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-left: 6px solid #4CAF50;
+        padding: 15px 20px;
+        border-radius: 12px;
         font-size: 18px;
         font-style: italic;
+        color: #e2e8f0 !important;
         margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+    /* 7. SIDEBAR CONTACT BOX */
+    .contact-box {
+        background: rgba(255, 255, 255, 0.05); 
+        backdrop-filter: blur(10px);
+        border-radius: 12px; 
+        padding: 15px; 
+        margin-bottom: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .contact-item {
+        margin-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 8px;
+    }
+    .contact-item:last-child {
+        margin-bottom: 0;
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    .contact-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: #ffffff !important;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .contact-phone {
+        font-family: 'Courier New', monospace;
+        font-size: 15px;
+        color: #4ade80 !important;
+        margin-top: 4px;
+        font-weight: bold;
     }
     
-    /* 9. ESCONDER HEADER */
-    header {visibility: hidden;}
-    
-    /* 10. EXPANDERS (Bordes sutiles) */
-    div[data-testid="stExpander"] {
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    /* 8. INPUT FIELDS (Dark Background) */
+   /* General Inputs (Single line text & Dropdowns) - Keep Dark */
+    .stTextInput input, .stSelectbox div[data-baseweb="select"] {
+        background-color: rgba(0, 0, 0, 0.3);
         color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
     }
+
+    /* SPECIFIC: Scratchpad (Multi-line Text Area) - White Paper Style */
+    .stTextArea textarea {
+        background-color: #ffffff !important; /* White Background */
+        color: #000000 !important; /* Black Text */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        caret-color: black; /* Makes the typing cursor black too */
+    }s
     </style>
 """, unsafe_allow_html=True)
 
+
+# --- VISUAL STYLES (THE GLASS PRO UPGRADE) ---
+st.markdown("""
+    <style>
+    /* GLOBAL TEXT COLOR */
+    h1, h2, h3, h4, p, li, span, div {
+        color: #f8f9fa !important;
+    }
+
+    /* BUTTONS */
+    .stButton button {
+        width: 100%;
+        border-radius: 12px;
+        height: 3.5em;
+        font-weight: 600;
+        font-size: 16px;
+        background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent button */
+        color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s;
+        backdrop-filter: blur(5px);
+    }
+    .stButton button:hover {
+        border-color: #ff4b4b;
+        background-color: rgba(255, 75, 75, 0.2);
+        color: #ff4b4b !important;
+    }
+
+    /* BIG SCRIPT (The Main Question Box) - GLASS STYLE */
+    .big-script {
+        font-size: 20px !important;
+        font-weight: 500;
+        color: #ffffff !important;
+        background: rgba(15, 23, 42, 0.6); /* Dark transparent background */
+        backdrop-filter: blur(12px); /* Blur effect */
+        -webkit-backdrop-filter: blur(12px);
+        padding: 24px;
+        border-radius: 16px;
+        border-left: 6px solid #ff4b4b;
+        margin-bottom: 25px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    /* DIALOGUE BOX (Secondary Scripts) - GLASS STYLE */
+    .dialogue-box {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-left: 6px solid #4CAF50;
+        padding: 15px 20px;
+        border-radius: 12px;
+        font-size: 18px;
+        font-style: italic;
+        color: #e2e8f0 !important;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+    /* SIDEBAR CONTACT BOX - GLASS STYLE */
+    .contact-box {
+        background: rgba(30, 41, 59, 0.7); 
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 12px; 
+        padding: 15px; 
+        margin-bottom: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+    .contact-item {
+        margin-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 8px;
+    }
+    .contact-item:last-child {
+        margin-bottom: 0;
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    .contact-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: #ffffff !important;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .contact-phone {
+        font-family: 'Courier New', monospace;
+        font-size: 15px;
+        color: #4ade80 !important; /* Bright Green */
+        margin-top: 4px;
+        padding-left: 2px;
+        letter-spacing: 0.5px;
+        font-weight: bold;
+    }
+    
+    /* INPUT FIELDS */
+    .stTextInput input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # --- STATE MANAGEMENT ---
 if 'step' not in st.session_state: st.session_state.step = 'HOME'
