@@ -44,7 +44,7 @@ def add_background(image_file):
 st.set_page_config(page_title="SwiftPro Navigator", page_icon="🔧", layout="centered")
 
 # ✅ Call Background
-add_background("imae_7.png")
+add_background("image_7.png")
 
 # --- VISUAL STYLES (THE GLASS PRO UPGRADE) ---
 st.markdown("""
