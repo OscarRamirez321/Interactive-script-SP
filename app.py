@@ -4,76 +4,98 @@ import base64
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="SwiftPro Navigator", page_icon="🔧", layout="centered")
 
-# --- VISUAL STYLES (FUSION: PRO GLASS + FIXED INPUTS) ---
+# --- VISUAL STYLES (FINAL FIX - DARK MENUS & HEADERS) ---
 st.markdown("""
     <style>
     /* 1. FONDO GENERAL */
     .stApp {
-        background-color: #0e1117; /* Main Page Dark Navy */
+        background-color: #0e1117;
     }
     section[data-testid="stSidebar"] {
-        background-color: #1c2333; /* Sidebar Dark Blue-Grey */
+        background-color: #1c2333;
     }
 
-    /* 2. TEXTOS GLOBALES (Sin romper los componentes) */
-    h1, h2, h3, h4, p, li, label, .stMarkdown {
+    /* 2. TEXTOS GLOBALES */
+    h1, h2, h3, h4, p, li, label, .stMarkdown, div {
         color: #f8f9fa !important;
     }
 
-    /* 3. ARREGLO DE DROPDOWNS (SELECT BOXES) */
-    div[data-baseweb="select"] > div {
-        background-color: #1c2333 !important;
-        color: white !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    }
-    /* El menú desplegable */
+    /* 3. ARREGLO CRÍTICO DE DROPDOWNS (El menú flotante) */
+    /* El contenedor de la lista desplegable */
     div[data-baseweb="popover"], div[data-baseweb="menu"], ul[data-baseweb="menu"] {
         background-color: #1c2333 !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
-    /* Las opciones */
+    /* Las opciones individuales dentro de la lista */
     li[data-baseweb="option"] {
         background-color: #1c2333 !important;
         color: white !important;
     }
+    /* El texto dentro de las opciones (para asegurar) */
+    li[data-baseweb="option"] div {
+        color: white !important; 
+    }
+    /* Efecto Hover (cuando pasas el mouse) */
     li[data-baseweb="option"]:hover, li[data-baseweb="option"]:focus, li[data-baseweb="option"][aria-selected="true"] {
         background-color: #ff4b4b !important;
         color: white !important;
     }
 
-    /* 4. ARREGLO DE INPUTS (TEXTO DE UNA LÍNEA) */
-    div[data-baseweb="input"] {
+    /* 4. ARREGLO CRÍTICO DE EXPANDERS (La barra de título blanca) */
+    /* El contenedor principal */
+    div[data-testid="stExpander"] {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+    }
+    /* LA BARRA DE TÍTULO (Donde dice Reference...) - AQUÍ ESTABA EL ERROR */
+    div[data-testid="stExpander"] > details > summary {
+        background-color: rgba(255, 255, 255, 0.05) !important; /* Fondo oscuro */
+        color: white !important; /* Texto blanco */
+    }
+    /* El icono de la flechita del expander */
+    div[data-testid="stExpander"] > details > summary svg {
+        fill: white !important;
+    }
+    div[data-testid="stExpander"] > details > summary:hover {
+        color: #ff4b4b !important; /* Color al pasar el mouse */
+    }
+    /* El contenido interno del expander */
+    div[data-testid="stExpander"] details {
+        background-color: transparent !important;
+    }
+
+    /* 5. ARREGLO DE INPUTS (Cajas de texto) */
+    /* La caja contenedora */
+    div[data-baseweb="input"], div[data-baseweb="select"] > div {
         background-color: rgba(0, 0, 0, 0.3) !important;
         border-radius: 8px;
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        color: white !important;
     }
+    /* El texto que escribes */
     .stTextInput input {
         background-color: transparent !important;
         color: white !important;
     }
-    ::placeholder {
-        color: rgba(255, 255, 255, 0.5) !important;
+    /* El texto seleccionado en el dropdown */
+    div[data-baseweb="select"] span {
+        color: white !important;
     }
 
-    /* 5. SCRATCHPAD (Bloc de notas blanco) */
+    /* 6. SCRATCHPAD (Bloc de notas blanco) */
     .stTextArea textarea {
         background-color: #ffffff !important; 
         color: #000000 !important;
         caret-color: black;
         border-radius: 8px;
     }
-
-    /* 6. EXPANDERS / ACCORDIONS (Fondo oscuro transparente) */
-    div[data-testid="stExpander"] {
-        background-color: rgba(255, 255, 255, 0.05) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    /* Arreglo para que el label del scratchpad se vea (Quick notes...) */
+    .stTextArea label {
         color: white !important;
     }
-    div[data-testid="stExpander"] details {
-        background-color: transparent !important;
-    }
 
-    /* 7. ESTILO DE BOTONES (Glass Look Grande) */
+    /* 7. ESTILO DE BOTONES */
     .stButton button {
         width: 100%;
         border-radius: 12px;
@@ -92,7 +114,7 @@ st.markdown("""
         color: #ff4b4b !important;
     }
 
-    /* 8. CAJAS PERSONALIZADAS (BIG SCRIPT & DIALOGUE) */
+    /* 8. CAJAS PERSONALIZADAS */
     .big-script {
         font-size: 20px !important;
         font-weight: 500;
@@ -113,9 +135,8 @@ st.markdown("""
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 12px;
         padding: 15px;
-        color: white !important; /* TEXTO BLANCO FORZADO */
+        color: white !important;
     }
-    
     .dialogue-box {
         border-left: 6px solid #4CAF50;
         font-size: 18px;
@@ -123,7 +144,7 @@ st.markdown("""
         margin-bottom: 20px;
     }
 
-    /* 9. ITEMS DE CONTACTO (SIDEBAR) */
+    /* 9. CONTACT ITEMS */
     .contact-item {
         margin-bottom: 12px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -150,7 +171,7 @@ st.markdown("""
         font-weight: bold;
     }
 
-    /* 10. OCULTAR HEADER DEFAULT Y CODE BLOCKS */
+    /* 10. LIMPIEZA */
     header {visibility: hidden;}
     .stCodeBlock {
         background-color: #000000 !important;
