@@ -122,8 +122,8 @@ def restart():
 
 # --- SIDEBAR INFO ---
 with st.sidebar:
-    # 1. Logo y Botón de Regresar
-    st.image("https://cdn-icons-png.flaticon.com/512/190/190411.png", width=50) # O tu logo local
+    # ✅ 1. TU LOGO DE SWIFT PRO (Restaurado)
+    st.image("image_7.png") 
     
     if st.session_state.history:
         if st.button("⬅️ BACK"):
@@ -132,7 +132,7 @@ with st.sidebar:
     
     st.title("🧠 CSR Command Center")
     
-    # ✅ AQUÍ ESTÁN LOS NÚMEROS NUEVOS
+    # ✅ 2. TELÉFONOS IMPORTANTES
     st.info("""
     ### 📞 Key Contacts
     
@@ -151,7 +151,7 @@ with st.sidebar:
     
     st.divider()
     
-    # 2. El Bloc de Notas (Scratchpad)
+    # 3. El Bloc de Notas (Scratchpad)
     if 'scratchpad' not in st.session_state:
         st.session_state.scratchpad = ""
     
