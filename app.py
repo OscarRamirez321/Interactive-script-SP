@@ -115,11 +115,21 @@ st.markdown("""
     }
     
     /* 8. INPUT FIELDS (Dark Background) */
-    .stTextInput input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
+   /* General Inputs (Single line text & Dropdowns) - Keep Dark */
+    .stTextInput input, .stSelectbox div[data-baseweb="select"] {
         background-color: rgba(0, 0, 0, 0.3);
-        color: white;
+        color: white !important;
         border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 8px;
+    }
+
+    /* SPECIFIC: Scratchpad (Multi-line Text Area) - White Paper Style */
+    .stTextArea textarea {
+        background-color: #ffffff !important; /* White Background */
+        color: #000000 !important; /* Black Text */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        caret-color: black; /* Makes the typing cursor black too */
     }
     </style>
 """, unsafe_allow_html=True)
