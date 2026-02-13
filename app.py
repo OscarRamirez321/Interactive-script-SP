@@ -2,6 +2,12 @@ import streamlit as st
 
 import base64
 
+st.set_page_config(
+    page_title="SwiftPro Navigator",  # El título que sale en la pestaña
+    page_icon="image_7.png",          # ¡AQUÍ VA TU LOGO! (Usa el nombre exacto de tu archivo)
+    layout="wide"                     # Opcional: usa todo el ancho de la pantalla
+)
+
 def mostrar_disponibilidad_central():
     st.markdown("### 📅 Service Availability Update")
     info_araksan = """
