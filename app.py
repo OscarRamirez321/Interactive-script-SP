@@ -4,7 +4,7 @@ import base64
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="SwiftPro Navigator", page_icon="🔧", layout="centered")
 
-# --- VISUAL STYLES (FINAL FIX - DARK MENUS & HEADERS) ---
+# --- VISUAL STYLES (FINAL FIX - DARK DROPDOWNS) ---
 st.markdown("""
     <style>
     /* 1. FONDO GENERAL */
@@ -20,67 +20,71 @@ st.markdown("""
         color: #f8f9fa !important;
     }
 
-    /* 3. ARREGLO CRÍTICO DE DROPDOWNS (El menú flotante) */
-    /* El contenedor de la lista desplegable */
-    div[data-baseweb="popover"], div[data-baseweb="menu"], ul[data-baseweb="menu"] {
+    /* 3. ARREGLO DEFINITIVO DE DROPDOWNS (Menús Desplegables) */
+    /* A) El contenedor flotante externo */
+    div[data-baseweb="popover"] {
         background-color: #1c2333 !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
     }
-    /* Las opciones individuales dentro de la lista */
+    
+    /* B) La lista interna (donde están las opciones) */
+    ul[data-baseweb="menu"] {
+        background-color: #1c2333 !important;
+    }
+    
+    /* C) Las opciones individuales (li) */
     li[data-baseweb="option"] {
-        background-color: #1c2333 !important;
-        color: white !important;
+        background-color: #1c2333 !important; /* Fondo Oscuro */
+        color: white !important; /* Texto Blanco */
     }
-    /* El texto dentro de las opciones (para asegurar) */
-    li[data-baseweb="option"] div {
-        color: white !important; 
-    }
-    /* Efecto Hover (cuando pasas el mouse) */
-    li[data-baseweb="option"]:hover, li[data-baseweb="option"]:focus, li[data-baseweb="option"][aria-selected="true"] {
-        background-color: #ff4b4b !important;
+    
+    /* D) Asegurar que el TEXTO dentro de la opción sea blanco */
+    li[data-baseweb="option"] * {
         color: white !important;
     }
 
-    /* 4. ARREGLO CRÍTICO DE EXPANDERS (La barra de título blanca) */
-    /* El contenedor principal */
+    /* E) Efecto Hover (cuando pasas el mouse por encima) */
+    li[data-baseweb="option"]:hover, 
+    li[data-baseweb="option"]:focus, 
+    li[data-baseweb="option"][aria-selected="true"] {
+        background-color: #ff4b4b !important; /* Rojo al seleccionar */
+        color: white !important;
+    }
+
+    /* 4. ARREGLO DE EXPANDERS (Barra de título oscura) */
     div[data-testid="stExpander"] {
         background-color: rgba(255, 255, 255, 0.05) !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         color: white !important;
     }
-    /* LA BARRA DE TÍTULO (Donde dice Reference...) - AQUÍ ESTABA EL ERROR */
     div[data-testid="stExpander"] > details > summary {
-        background-color: rgba(255, 255, 255, 0.05) !important; /* Fondo oscuro */
-        color: white !important; /* Texto blanco */
-    }
-    /* El icono de la flechita del expander */
-    div[data-testid="stExpander"] > details > summary svg {
-        fill: white !important;
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        color: white !important;
     }
     div[data-testid="stExpander"] > details > summary:hover {
-        color: #ff4b4b !important; /* Color al pasar el mouse */
+        color: #ff4b4b !important;
     }
-    /* El contenido interno del expander */
     div[data-testid="stExpander"] details {
         background-color: transparent !important;
     }
 
-    /* 5. ARREGLO DE INPUTS (Cajas de texto) */
-    /* La caja contenedora */
+    /* 5. ARREGLO DE INPUTS (Cajas de texto y Selectbox cerrado) */
     div[data-baseweb="input"], div[data-baseweb="select"] > div {
         background-color: rgba(0, 0, 0, 0.3) !important;
         border-radius: 8px;
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
         color: white !important;
     }
-    /* El texto que escribes */
     .stTextInput input {
         background-color: transparent !important;
         color: white !important;
     }
-    /* El texto seleccionado en el dropdown */
     div[data-baseweb="select"] span {
         color: white !important;
+    }
+    /* Icono de la flechita del dropdown */
+    div[data-baseweb="select"] svg {
+        fill: white !important;
     }
 
     /* 6. SCRATCHPAD (Bloc de notas blanco) */
@@ -90,7 +94,6 @@ st.markdown("""
         caret-color: black;
         border-radius: 8px;
     }
-    /* Arreglo para que el label del scratchpad se vea (Quick notes...) */
     .stTextArea label {
         color: white !important;
     }
