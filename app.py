@@ -4,88 +4,110 @@ import base64
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="SwiftPro Navigator", page_icon="🔧", layout="centered")
 
-# --- VISUAL STYLES (NUCLEAR FIX - SOLID DARK MODE) ---
 st.markdown("""
     <style>
-    /* 1. FONDO GENERAL DE LA APP */
+    /* 1. FONDO GENERAL */
     .stApp {
         background-color: #0e1117;
     }
     section[data-testid="stSidebar"] {
         background-color: #1c2333;
     }
-    
-    /* 2. FORZAR TEXTO BLANCO GLOBALMENTE */
+
+    /* 2. REGLA MAESTRA DE TEXTO BLANCO */
     h1, h2, h3, h4, p, li, span, label, .stMarkdown, div {
         color: #f8f9fa !important;
     }
 
-    /* ==============================================
-       CORRECCIÓN 1: LOS INPUTS (CAJAS DE TEXTO)
-       Problema: Se veían blancas en tu screenshot.
-       Solución: Pintar de negro sólido la caja Y el input.
-       ============================================== */
+    /* ============================================================
+       CORRECCIÓN 1: EL MENÚ DESPLEGABLE (DROPDOWN / SELECTBOX)
+       Objetivo: Fondo Oscuro #1c2333 para que se vean las letras.
+       ============================================================ */
     
-    /* La caja contenedora del input */
-    div[data-baseweb="input"] {
-        background-color: #1c2333 !important; /* Fondo SÓLIDO, no transparente */
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        border-radius: 8px !important;
-    }
-    
-    /* El campo donde escribes (el texto en sí) */
-    .stTextInput input, .stNumberInput input {
-        background-color: #1c2333 !important;
-        color: white !important;
-        caret-color: white !important; /* El cursor que parpadea */
-    }
-    
-    /* El Selectbox cerrado (antes de hacer clic) */
-    div[data-baseweb="select"] > div {
-        background-color: #1c2333 !important;
-        color: white !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    }
-
-    /* ==============================================
-       CORRECCIÓN 2: EL DROPDOWN DESPLEGABLE (MENU)
-       Problema: Fondo blanco con letras blancas.
-       Solución: Atacar el 'popover' que flota.
-       ============================================== */
-    
-    /* El contenedor flotante (la caja madre del menú) */
+    /* El contenedor flotante del menú */
     div[data-baseweb="popover"],
-    div[data-baseweb="popover"] > div {
-        background-color: #1c2333 !important;
+    div[data-baseweb="popover"] > div,
+    div[data-baseweb="menu"],
+    ul[data-baseweb="menu"] {
+        background-color: #1c2333 !important; /* FONDO OSCURO OBLIGATORIO */
         border: none !important;
     }
 
-    /* La lista de opciones (ul) */
-    ul[data-baseweb="menu"] {
-        background-color: #1c2333 !important;
-    }
-
-    /* Cada opción individual (li) */
+    /* Las opciones individuales (renglones) */
     li[data-baseweb="option"] {
         background-color: #1c2333 !important;
         color: white !important;
     }
 
-    /* Asegurar que el texto dentro de la opción sea blanco */
-    li[data-baseweb="option"] * {
+    /* El texto DENTRO de las opciones */
+    li[data-baseweb="option"] div {
         color: white !important;
     }
 
-    /* Cuando pasas el mouse por encima (Hover) */
-    li[data-baseweb="option"]:hover, 
+    /* Efecto Hover (Rojo al pasar el mouse) */
+    li[data-baseweb="option"]:hover,
     li[data-baseweb="option"][aria-selected="true"] {
-        background-color: #ff4b4b !important; /* Rojo SwiftPro */
+        background-color: #ff4b4b !important;
         color: white !important;
     }
 
-    /* ==============================================
-       CORRECCIÓN 3: EXPANDERS (CAJAS QUE SE ABREN)
-       ============================================== */
+    /* ============================================================
+       CORRECCIÓN 2: EL CUADRO DE CÓDIGO (SERVICETITAN NOTES)
+       Objetivo: Fondo Negro estilo Terminal para que se lea.
+       ============================================================ */
+    
+    /* La caja completa del bloque de código */
+    .stCodeBlock {
+        background-color: #000000 !important; /* FONDO NEGRO */
+        border: 1px solid #333 !important;
+        border-radius: 8px !important;
+    }
+    
+    /* El área interna donde está el texto */
+    .stCodeBlock pre {
+        background-color: #000000 !important;
+    }
+    
+    /* El texto mismo del código */
+    .stCodeBlock code {
+        color: #ffffff !important; /* TEXTO BLANCO (O verde si prefieres) */
+        background-color: #000000 !important;
+    }
+    
+    /* El botón de copiar en la esquina del bloque de código */
+    .stCodeBlock button {
+        background-color: #333 !important;
+        color: white !important;
+    }
+
+    /* ============================================================
+       CORRECCIÓN 3: INPUTS Y OTRAS CAJAS
+       ============================================================ */
+    
+    /* Cajas de texto (Inputs) */
+    div[data-baseweb="input"] {
+        background-color: #1c2333 !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }
+    .stTextInput input {
+        background-color: #1c2333 !important;
+        color: white !important;
+        caret-color: white !important;
+    }
+    
+    /* Caja de selección cerrada */
+    div[data-baseweb="select"] > div {
+        background-color: #1c2333 !important;
+        color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    /* Flecha del dropdown */
+    div[data-baseweb="select"] svg {
+        fill: white !important;
+    }
+
+    /* Expander (Acordeón) */
     div[data-testid="stExpander"] {
         background-color: #1c2333 !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -98,15 +120,12 @@ st.markdown("""
     div[data-testid="stExpander"] > details > summary:hover {
         color: #ff4b4b !important;
     }
-    div[data-testid="stExpander"] details {
-        background-color: transparent !important;
-    }
 
-    /* ==============================================
-       OTROS ESTILOS (BOTONES, CAJAS, ETC)
-       ============================================== */
+    /* ============================================================
+       ESTILOS PERSONALIZADOS (BOTONES, CAJAS DE TEXTO)
+       ============================================================ */
     
-    /* SCRATCHPAD: Este es el ÚNICO que dejamos blanco (Bloc de notas) */
+    /* Scratchpad (Bloc de notas blanco - ÚNICA COSA BLANCA) */
     .stTextArea textarea {
         background-color: #ffffff !important; 
         color: #000000 !important;
@@ -116,7 +135,7 @@ st.markdown("""
         color: white !important;
     }
 
-    /* BOTONES */
+    /* Botones Grandes */
     .stButton button {
         width: 100%;
         border-radius: 12px;
@@ -126,7 +145,6 @@ st.markdown("""
         background-color: rgba(255, 255, 255, 0.1); 
         color: white !important;
         border: 1px solid rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(5px);
     }
     .stButton button:hover {
         border-color: #ff4b4b;
@@ -134,21 +152,19 @@ st.markdown("""
         color: #ff4b4b !important;
     }
 
-    /* CAJAS DE TEXTO PERSONALIZADAS */
+    /* Cajas de diálogo */
     .big-script {
         font-size: 20px !important;
         font-weight: 500;
         color: #ffffff !important;
-        background: #1e293b; /* Fondo sólido oscuro */
+        background: #1e293b;
         padding: 24px;
         border-radius: 16px;
         border-left: 6px solid #ff4b4b;
         margin-bottom: 25px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
-
     .dialogue-box, .contact-box {
-        background: #1e293b; /* Fondo sólido oscuro */
+        background: #1e293b;
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 12px;
         padding: 15px;
@@ -161,16 +177,12 @@ st.markdown("""
         margin-bottom: 20px;
     }
 
-    /* CONTACTOS */
-    .contact-item { border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 8px; margin-bottom: 12px; }
-    .contact-item:last-child { border: none; margin: 0; padding: 0; }
-    .contact-name { font-weight: 600; color: #ffffff !important; }
-    .contact-phone { font-family: 'Courier New', monospace; color: #4ade80 !important; font-weight: bold; }
-
-    /* LIMPIEZA FINAL */
+    /* Contactos Sidebar */
+    .contact-name { color: #ffffff !important; font-weight: 600; }
+    .contact-phone { color: #4ade80 !important; font-family: monospace; }
+    
+    /* Ocultar Header */
     header {visibility: hidden;}
-    .stCodeBlock { background-color: #000000 !important; }
-    ::placeholder { color: rgba(255, 255, 255, 0.5) !important; }
     </style>
 """, unsafe_allow_html=True)
 
