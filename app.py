@@ -122,30 +122,27 @@ def restart():
 
 # --- SIDEBAR INFO ---
 with st.sidebar:
-    st.image("image_7.png", use_container_width=True)
+    # IMAGEN: Quitamos el parámetro que da error
+    st.image("image_7.png") 
     
-    # --- GLOBAL BACK BUTTON ---
-    # Only show if we are NOT on the home page (history exists)
+    # BOTÓN ATRÁS: Quitamos use_container_width
     if st.session_state.history:
-        if st.button("⬅️ BACK", use_container_width=True):
+        if st.button("⬅️ BACK"):
             go_back()
         st.divider()
-    # --------------------------
-
+    
     st.title("🧠 CSR Cheat Sheet")
     
-    # RULE OF THUMB
+    # ✅ NUEVA SECCIÓN: NÚMEROS IMPORTANTES
     st.info("""
-    **🚨 EMERGENCY IF:**
-    * Safety issue (Gas/Water damage)
-    * No Heat < 32°F
-    * No AC > 80°F
+    ### 📞 Important Contact Numbers
     
-    **✅ STANDARD IF:**
-    * Comfort issue only
-    * Noise/Smell without danger
-    
-    *Unsure? Escalate to Manager.*
+    * **Hannah's cell:** 571-726-9008
+    * **Jevon dialpad:** 703-214-9783
+    * **Raul:** 571-301-3134
+    * **Gio:** (703) 661-9006
+    * **Araksan's dialpad:** (703) 239-7626
+    * **Araksan's work cell:** 703-928-0937
     """)
     
     st.divider()
@@ -166,7 +163,7 @@ with st.sidebar:
     
     if st.button("🔄 Start Over"):
         restart()
-
+        
 # --- MAIN LOGIC ---
 
 # 1. HOME
