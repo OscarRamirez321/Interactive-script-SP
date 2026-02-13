@@ -1,18 +1,15 @@
 import streamlit as st
 
+
 import base64
 
-st.set_page_config(
-    page_title="SwiftPro Navigator",  # El título que sale en la pestaña
-    page_icon="image_7.png",          # ¡AQUÍ VA TU LOGO! (Usa el nombre exacto de tu archivo)
-    layout="wide"                     # Opcional: usa todo el ancho de la pantalla
-)
+
 
 def mostrar_disponibilidad_central():
     st.markdown("### 📅 Service Availability Update")
     info_araksan = """
     **🔥 HVAC:** Feb 11 (Wed) - After 12 PM | Feb 12 (Thu) - Open (All Day)
-    
+    s
     **🚿 Plumbing:** Feb 11 (Wed) - Emergency only | Feb 12 (Thu) - Open (All Day)
     
     **🧹 Duct/Dryer:** Feb 12 (Thu) - Open (All Day)
@@ -276,11 +273,8 @@ elif st.session_state.step == 'CATEGORY_SELECT':
         st.info("🔥 HVAC")
         hvac_options = [
             "Select job...",
-            "AC Repair", "Heat Pump Repair", "Natural Gas/Propane Furnace Repair", 
-            "Boiler Replacement", "Full HVAC System Replacement", "Mini-Split Repairs",
-            "New Mini-Split Installations", "HVAC Maintenance / Tune-ups", "Duct Cleanings",
-            "Filter replacement", "Fan Coils Replacements", "Packaged Unit Replacements",
-            "Thermostats", "Humidifiers & Dehumidifiers", "Air Scrubbers/UV/Air Purification"
+            "No Heat Repair", "No AC Repair", "Maintenance (Inspections, Cleanings, system is working and needs to be cleaned or maintained) ", 
+            "Service/Repair"
         ]
         hvac_choice = st.selectbox("HVAC List:", hvac_options, label_visibility="collapsed")
         
@@ -294,11 +288,8 @@ elif st.session_state.step == 'CATEGORY_SELECT':
         st.info("🚿 PLUMBING")
         plumb_options = [
             "Select job...",
-            "Leaks", "Clogged drains", "Spigots", "Thermostatic Mixing Valves",
-            "Water Softeners & filtration systems", "Toilet repair/replacement", "Faucet repair",
-            "Water heater repair or replacement", "Tankless water heaters", "Garbage disposals",
-            "Sump pumps", "Sewer line issues", "Water line repair", "Fixture installs",
-            "Repipes", "Underground", "Well Pumps", "Customer supplied basic plumbing repairs"
+            "Water Heater / Tank ", "Repipe", "Drain / Sewer ", "Pumps",
+            "Toilet / Faucet ", "Underground", "Faucet repair"
         ]
         plumb_choice = st.selectbox("Plumbing List:", plumb_options, label_visibility="collapsed")
         
@@ -313,7 +304,7 @@ elif st.session_state.step == 'CATEGORY_SELECT':
         sales_options = [
             "Select job...",
             "HVAC Replacement", "Water Heater Replacement (Tank/Tankless)",
-            "Humidifier Replacement", "Boiler Replacement"
+            "Humidifier Replacement", "Boiler Replacement","Mini- Split Installation"
         ]
         sales_choice = st.selectbox("Sales List:", sales_options, label_visibility="collapsed")
         
