@@ -122,32 +122,36 @@ def restart():
 
 # --- SIDEBAR INFO ---
 with st.sidebar:
-    # IMAGEN: Quitamos el parámetro que da error
-    st.image("image_7.png") 
+    # 1. Logo y Botón de Regresar
+    st.image("https://cdn-icons-png.flaticon.com/512/190/190411.png", width=50) # O tu logo local
     
-    # BOTÓN ATRÁS: Quitamos use_container_width
     if st.session_state.history:
         if st.button("⬅️ BACK"):
             go_back()
         st.divider()
     
-    st.title("🧠 CSR Cheat Sheet")
+    st.title("🧠 CSR Command Center")
     
-    # ✅ NUEVA SECCIÓN: NÚMEROS IMPORTANTES
+    # ✅ AQUÍ ESTÁN LOS NÚMEROS NUEVOS
     st.info("""
-    ### 📞 Important Contact Numbers
+    ### 📞 Key Contacts
     
-    * **Hannah's cell:** 571-726-9008
-    * **Jevon dialpad:** 703-214-9783
-    * **Raul:** 571-301-3134
-    * **Gio:** (703) 661-9006
-    * **Araksan's dialpad:** (703) 239-7626
-    * **Araksan's work cell:** 703-928-0937
+    **👩‍💼 Hannah (Cell):** 571-726-9008
+    
+    **👨‍🔧 Jevon (Dialpad):** 703-214-9783
+    
+    **👨‍🔧 Raul:** 571-301-3134
+    
+    **👨‍🔧 Gio:** (703) 661-9006
+    
+    **📞 Araksan (Dialpad):** (703) 239-7626
+    
+    **📱 Araksan (Cell):** 703-928-0937
     """)
     
     st.divider()
     
-    # LIVE NOTEPAD
+    # 2. El Bloc de Notas (Scratchpad)
     if 'scratchpad' not in st.session_state:
         st.session_state.scratchpad = ""
     
@@ -155,7 +159,7 @@ with st.sidebar:
     st.session_state.scratchpad = st.text_area(
         "Quick notes (Name, #, Codes):", 
         value=st.session_state.scratchpad,
-        height=150,
+        height=200,
         placeholder="Type quick details here..."
     )
     
@@ -163,7 +167,7 @@ with st.sidebar:
     
     if st.button("🔄 Start Over"):
         restart()
-        
+
 # --- MAIN LOGIC ---
 
 # 1. HOME
